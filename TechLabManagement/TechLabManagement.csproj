@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\TechLabManagement.Core\TechLabManagement.Core.csproj" />
+    <ProjectReference Include="..\TechLabManagement.Services\TechLabManagement.Services.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TechLabManagement.Core\TechLabManagement.Core.csproj" />
+    <ProjectReference Include="..\TechLabManagement.Services\TechLabManagement.Services.csproj" />
+  </ItemGroup>
+
+</Project>

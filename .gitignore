@@ -1,0 +1,70 @@
+# OS-generated files
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.tmp
+
+# Visual Studio / IDE
+.vs/
+.idea/
+.vscode/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.sln.iml
+_ReSharper*/
+*[Rr]e[Ss]harper*/
+
+# Build results
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]*/
+[Bb]ld/
+build/
+app.publish/
+publish/
+artifacts/
+dist/
+
+# .NET / NuGet
+packages/
+.nuget/
+*.nupkg
+*.snupkg
+project.lock.json
+project.fragment.lock.json
+
+# Logs and diagnostics
+*.log
+[Ll]og/
+[Ll]ogs/
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+coverage*/
+.coverage/
+BenchmarkDotNet.Artifacts/
+
+# WPF generated artifacts (normally inside obj, keep as safety)
+*.g.cs
+*.g.i.cs
+*.baml
+*.g.resources
+
+# Keys and certificates
+*.pfx
+*.p12
+
+# Other
+*.dbmdl
+*.jfm
+*.cache
+*.orig
+
+

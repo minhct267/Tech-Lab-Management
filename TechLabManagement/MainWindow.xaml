@@ -1,0 +1,19 @@
+﻿<Window x:Class="TechLabManagement.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:TechLabManagement"
+    mc:Ignorable="d"
+    Title="Tech Lab Management" Height="600" Width="1000" MinWidth="900" MinHeight="550">
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_Navigate">
+                <MenuItem Header="Dashboard" Click="DashboardMenu_Click" />
+                <MenuItem Header="Labs" Click="LabsMenu_Click" />
+                <MenuItem Header="Access Request" Click="AccessRequestMenu_Click" />
+            </MenuItem>
+        </Menu>
+        <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden" />
+    </DockPanel>
+</Window>

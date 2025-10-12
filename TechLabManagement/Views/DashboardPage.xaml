@@ -1,0 +1,76 @@
+<Page x:Class="TechLabManagement.Views.DashboardPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="Dashboard">
+    <ScrollViewer>
+        <Grid Margin="16">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <TextBlock Text="Tech Lab Dashboard" FontSize="22" FontWeight="Bold" />
+
+            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,12,0,12">
+                <StackPanel Width="220" Margin="0,0,16,0">
+                    <TextBlock Text="Pending Access Requests" />
+                    <TextBlock Text="{Binding PendingAccessCount}" FontSize="24" FontWeight="Bold" />
+                </StackPanel>
+                <StackPanel Width="220" Margin="0,0,16,0">
+                    <TextBlock Text="Bookings Today" />
+                    <TextBlock Text="{Binding BookingsTodayCount}" FontSize="24" FontWeight="Bold" />
+                </StackPanel>
+                <StackPanel Width="220">
+                    <TextBlock Text="Upcoming Maintenance" />
+                    <TextBlock Text="{Binding DueMaintenanceCount}" FontSize="24" FontWeight="Bold" />
+                </StackPanel>
+            </StackPanel>
+
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <GroupBox Header="Top Labs by Booked Hours (next 7 days)" Margin="0,0,16,0">
+                    <ItemsControl ItemsSource="{Binding TopLabStats}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,6">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="160" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="60" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{Binding Name}" />
+                                    <Border Grid.Column="1" Background="#FF5FA8" Height="14"
+                                        Width="{Binding BarWidth}" />
+                                    <TextBlock Grid.Column="2" Text="{Binding Hours}"
+                                        HorizontalAlignment="Right" />
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </GroupBox>
+
+                <GroupBox Grid.Column="1" Header="Today">
+                    <ListView ItemsSource="{Binding TodayBookings}">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="When" Width="120"
+                                    DisplayMemberBinding="{Binding Start}" />
+                                <GridViewColumn Header="Resource" Width="160"
+                                    DisplayMemberBinding="{Binding ResourceName}" />
+                                <GridViewColumn Header="User" Width="120"
+                                    DisplayMemberBinding="{Binding UserName}" />
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </GroupBox>
+            </Grid>
+        </Grid>
+    </ScrollViewer>
+</Page>
