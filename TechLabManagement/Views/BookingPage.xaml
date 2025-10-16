@@ -1,0 +1,107 @@
+<Page x:Class="TechLabManagement.Views.BookingPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="Booking Scheduler">
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Booking Scheduler" FontSize="20" FontWeight="Bold" Margin="0,0,0,16" />
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="400" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Booking Form -->
+            <Border Grid.Column="0" BorderBrush="#DDD" BorderThickness="1" Padding="16" Margin="0,0,16,0">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <TextBlock Text="Create New Booking" FontSize="16" FontWeight="Bold" Margin="0,0,0,12" />
+
+                        <!-- Resource Selection -->
+                        <TextBlock Text="Resource" />
+                        <ComboBox ItemsSource="{Binding Resources}" 
+                                SelectedItem="{Binding SelectedResource}"
+                                DisplayMemberPath="DisplayName"
+                                Margin="0,4,0,12" />
+
+                        <!-- Date Selection -->
+                        <TextBlock Text="Date" />
+                        <DatePicker SelectedDate="{Binding SelectedDate}" Margin="0,4,0,12" />
+
+                        <!-- Time Selection -->
+                        <TextBlock Text="Start Time" />
+                        <StackPanel Orientation="Horizontal" Margin="0,4,0,12">
+                            <TextBox Text="{Binding StartHour}" Width="50" Margin="0,0,8,0" />
+                            <TextBlock Text=":" VerticalAlignment="Center" Margin="0,0,8,0" />
+                            <TextBox Text="{Binding StartMinute}" Width="50" />
+                            <TextBlock Text="(HH:MM)" VerticalAlignment="Center" Margin="8,0,0,0" Foreground="Gray" />
+                        </StackPanel>
+
+                        <TextBlock Text="End Time" />
+                        <StackPanel Orientation="Horizontal" Margin="0,4,0,12">
+                            <TextBox Text="{Binding EndHour}" Width="50" Margin="0,0,8,0" />
+                            <TextBlock Text=":" VerticalAlignment="Center" Margin="0,0,8,0" />
+                            <TextBox Text="{Binding EndMinute}" Width="50" />
+                            <TextBlock Text="(HH:MM)" VerticalAlignment="Center" Margin="8,0,0,0" Foreground="Gray" />
+                        </StackPanel>
+
+                        <!-- Purpose -->
+                        <TextBlock Text="Purpose" />
+                        <TextBox Text="{Binding Purpose}" Height="80" TextWrapping="Wrap" 
+                               AcceptsReturn="True" Margin="0,4,0,12" />
+
+                        <!-- Check Conflicts -->
+                        <Button Content="Check for Conflicts" Command="{Binding CheckConflictsCommand}" 
+                              Padding="8,4" Margin="0,0,0,8" />
+                        <TextBlock Text="{Binding ConflictMessage}" TextWrapping="Wrap" 
+                                 Margin="0,0,0,12" FontWeight="Bold" />
+
+                        <!-- Create Booking -->
+                        <Button Content="Create Booking" Command="{Binding CreateBookingCommand}" 
+                              Padding="8,4" Background="#4CAF50" Foreground="White" 
+                              BorderBrush="#4CAF50" FontWeight="Bold" />
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+
+            <!-- Existing Bookings List -->
+            <Border Grid.Column="1" BorderBrush="#DDD" BorderThickness="1" Padding="16">
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Top" Text="Existing Bookings" FontSize="16" FontWeight="Bold" Margin="0,0,0,12" />
+                    <TextBlock DockPanel.Dock="Top" Margin="0,0,0,8">
+                        <Run Text="Selected Resource: " FontWeight="Bold" />
+                        <Run Text="{Binding SelectedResource.Name, FallbackValue=None}" />
+                    </TextBlock>
+                    <TextBlock DockPanel.Dock="Top" Margin="0,0,0,12">
+                        <Run Text="Date: " FontWeight="Bold" />
+                        <Run Text="{Binding SelectedDate, StringFormat='{}{0:d}'}" />
+                    </TextBlock>
+
+                    <DataGrid ItemsSource="{Binding ExistingBookings}" 
+                            AutoGenerateColumns="False" 
+                            IsReadOnly="True"
+                            CanUserAddRows="False"
+                            CanUserDeleteRows="False"
+                            CanUserResizeRows="False">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Start" Binding="{Binding Start}" Width="60" />
+                            <DataGridTextColumn Header="End" Binding="{Binding End}" Width="60" />
+                            <DataGridTextColumn Header="User" Binding="{Binding UserName}" Width="100" />
+                            <DataGridTextColumn Header="Purpose" Binding="{Binding Purpose}" Width="*" />
+                            <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="80" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</Page>
+

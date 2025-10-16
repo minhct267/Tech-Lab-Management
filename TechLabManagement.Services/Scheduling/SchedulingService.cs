@@ -43,6 +43,14 @@ public sealed class SchedulingService : ISchedulingService
 		candidate.Status = BookingStatus.Confirmed;
 		return (true, null);
 	}
+
+	public IEnumerable<Booking> GetConflicts(Guid? labId, Guid? equipmentId, DateTime start, DateTime end)
+	{
+		return _bookingRepo.Query(b =>
+			b.Status != BookingStatus.Rejected &&
+			((labId.HasValue && b.LabId == labId.Value) || (equipmentId.HasValue && b.EquipmentId == equipmentId.Value)) &&
+			b.End > start && b.Start < end);
+	}
 }
 
 

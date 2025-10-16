@@ -20,7 +20,7 @@ public sealed class DashboardViewModel : BaseViewModel
 		// Demo data from services
 		var today = DateTime.Today;
 		BookingsTodayCount = _svc.Bookings.GetAll().Count(b => b.Start.Date == today);
-		PendingAccessCount = 0; // Will be wired when AccessRequests repo added
+		PendingAccessCount = _svc.AccessRequests.Query(r => r.Status == AccessRequestStatus.Pending).Count();
 		DueMaintenanceCount = 0; // Placeholder for future
 
 		// Build simple stats using LINQ

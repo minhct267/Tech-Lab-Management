@@ -11,7 +11,9 @@ public static class SampleDataSeeder
 		IRepository<Team> teams,
 		IRepository<Lab> labs,
 		IRepository<Equipment> equipment,
-		IRepository<InductionTest> tests)
+		IRepository<InductionTest> tests,
+		IRepository<Booking>? bookings = null,
+		IRepository<AccessRequest>? accessRequests = null)
 	{
 		// Users
 		var admin = users.Add(new User { Name = "Admin", Email = "admin@uni.local", Role = UserRole.Admin });
@@ -84,6 +86,132 @@ public static class SampleDataSeeder
 				new Question { Text = "Know emergency stop location?", Options = new() { "Yes", "No" }, CorrectOptionIndex = 0 }
 			}
 		});
+
+		tests.Add(new InductionTest
+		{
+			LabId = mr.Id,
+			Questions = new()
+			{
+				new Question { Text = "Understand motion sickness risks?", Options = new() { "Yes", "No" }, CorrectOptionIndex = 0 },
+				new Question { Text = "Secure loose items before platform use?", Options = new() { "Yes", "No" }, CorrectOptionIndex = 0 }
+			}
+		});
+
+		// Sample bookings
+		if (bookings != null)
+		{
+			var today = DateTime.Today;
+			
+			// Today's bookings
+			bookings.Add(new Booking
+			{
+				UserId = alice.Id,
+				TeamId = teamA.Id,
+				LabId = electrical.Id,
+				Start = today.AddHours(9),
+				End = today.AddHours(11),
+				Purpose = "PCB soldering for Project A prototype",
+				Status = BookingStatus.Confirmed
+			});
+
+			bookings.Add(new Booking
+			{
+				UserId = bob.Id,
+				TeamId = teamA.Id,
+				EquipmentId = robotArm.Id,
+				Start = today.AddHours(14),
+				End = today.AddHours(16),
+				Purpose = "Robot arm calibration tests",
+				Status = BookingStatus.Confirmed
+			});
+
+			// Future bookings
+			bookings.Add(new Booking
+			{
+				UserId = alice.Id,
+				TeamId = teamB.Id,
+				LabId = mr.Id,
+				Start = today.AddDays(1).AddHours(10),
+				End = today.AddDays(1).AddHours(12),
+				Purpose = "VR simulation testing",
+				Status = BookingStatus.Confirmed
+			});
+
+			bookings.Add(new Booking
+			{
+				UserId = bob.Id,
+				EquipmentId = motion.Id,
+				Start = today.AddDays(2).AddHours(13),
+				End = today.AddDays(2).AddHours(15),
+				Purpose = "Motion platform experiments",
+				Status = BookingStatus.Pending
+			});
+
+			// More bookings for stats
+			for (int i = 0; i < 5; i++)
+			{
+				bookings.Add(new Booking
+				{
+					UserId = alice.Id,
+					LabId = robotics.Id,
+					Start = today.AddDays(i).AddHours(9 + i),
+					End = today.AddDays(i).AddHours(11 + i),
+					Purpose = $"Robotics research session {i + 1}",
+					Status = BookingStatus.Confirmed
+				});
+			}
+		}
+
+		// Sample access requests
+		if (accessRequests != null)
+		{
+			// Pending request from Bob
+			accessRequests.Add(new AccessRequest
+			{
+				UserId = bob.Id,
+				LabId = mr.Id,
+				TeamId = teamA.Id,
+				Reason = "Need access to Mixed Reality Lab for final year project on VR interaction.",
+				SubmittedAt = DateTime.UtcNow.AddDays(-1),
+				Status = AccessRequestStatus.Pending,
+				Score = 100
+			});
+
+			// Another pending request
+			accessRequests.Add(new AccessRequest
+			{
+				UserId = alice.Id,
+				LabId = robotics.Id,
+				TeamId = teamB.Id,
+				Reason = "Require Robotics Lab access for autonomous navigation research.",
+				SubmittedAt = DateTime.UtcNow.AddDays(-2),
+				Status = AccessRequestStatus.Pending,
+				Score = 100
+			});
+
+			// Approved request
+			accessRequests.Add(new AccessRequest
+			{
+				UserId = alice.Id,
+				LabId = electrical.Id,
+				TeamId = teamA.Id,
+				Reason = "Electronics assembly and testing for project prototype.",
+				SubmittedAt = DateTime.UtcNow.AddDays(-5),
+				Status = AccessRequestStatus.Approved,
+				Score = 100
+			});
+
+			// Rejected request (low score)
+			accessRequests.Add(new AccessRequest
+			{
+				UserId = bob.Id,
+				LabId = electrical.Id,
+				Reason = "Basic electronics work needed.",
+				SubmittedAt = DateTime.UtcNow.AddDays(-7),
+				Status = AccessRequestStatus.Rejected,
+				Score = 50
+			});
+		}
 	}
 }
 

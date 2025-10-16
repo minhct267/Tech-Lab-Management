@@ -5,15 +5,25 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:local="clr-namespace:TechLabManagement"
     mc:Ignorable="d"
-    Title="Tech Lab Management" Height="600" Width="1000" MinWidth="900" MinHeight="550">
+    Title="Tech Lab Management System" Height="700" Width="1200" MinWidth="900" MinHeight="550"
+    WindowStartupLocation="CenterScreen">
     <DockPanel>
-        <Menu DockPanel.Dock="Top">
-            <MenuItem Header="_Navigate">
-                <MenuItem Header="Dashboard" Click="DashboardMenu_Click" />
-                <MenuItem Header="Labs" Click="LabsMenu_Click" />
-                <MenuItem Header="Access Request" Click="AccessRequestMenu_Click" />
-            </MenuItem>
-        </Menu>
-        <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden" />
+        <!-- Modern Menu Bar -->
+        <Border DockPanel.Dock="Top" Background="#1976D2" Padding="0">
+            <Menu Background="#1976D2" Foreground="White" FontSize="14" Padding="8,4">
+                <MenuItem Header="🏠 _Dashboard" Click="DashboardMenu_Click" Foreground="White" Padding="12,8"/>
+                <MenuItem Header="🔬 _Labs" Click="LabsMenu_Click" Foreground="White" Padding="12,8"/>
+                <MenuItem Header="📝 _Access Request" Click="AccessRequestMenu_Click" Foreground="White" Padding="12,8"/>
+                <MenuItem Header="📅 _Booking" Click="BookingMenu_Click" Foreground="White" Padding="12,8"/>
+                <MenuItem Header="✅ _Approvals" Click="ApprovalsMenu_Click" Foreground="White" Padding="12,8"/>
+                <MenuItem Header="ℹ _Help" Padding="12,8" Foreground="White">
+                    <MenuItem Header="About" Click="AboutMenu_Click"/>
+                    <MenuItem Header="User Guide" Click="HelpMenu_Click"/>
+                </MenuItem>
+            </Menu>
+        </Border>
+        
+        <!-- Main Content Frame -->
+        <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden" Background="#F5F5F5" />
     </DockPanel>
 </Window>
