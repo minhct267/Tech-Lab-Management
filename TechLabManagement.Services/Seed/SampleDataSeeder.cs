@@ -25,9 +25,44 @@ public static class SampleDataSeeder
 		users.Update(alice);
 		CreateUser(users, out var bob, "Bob", "bob", "bob@uni.local", UserRole.Student, "bob123", supervisorId: sup.Id);
 
+		// Additional users for analytics richness
+		CreateUser(users, out var charlie, "Charlie", "charlie", "charlie@uni.local", UserRole.Researcher, "charlie123", supervisorId: sup.Id);
+		CreateUser(users, out var diana, "Diana", "diana", "diana@uni.local", UserRole.Student, "diana123", supervisorId: sup.Id);
+		CreateUser(users, out var eric, "Eric", "eric", "eric@uni.local", UserRole.Staff, "eric123");
+		CreateUser(users, out var fiona, "Fiona", "fiona", "fiona@uni.local", UserRole.Researcher, "fiona123", supervisorId: sup.Id);
+		CreateUser(users, out var grace, "Grace", "grace", "grace@uni.local", UserRole.Student, "grace123", supervisorId: sup.Id);
+		CreateUser(users, out var henry, "Henry", "henry", "henry@uni.local", UserRole.Researcher, "henry123", supervisorId: sup.Id);
+		CreateUser(users, out var iris, "Iris", "iris", "iris@uni.local", UserRole.Student, "iris123", supervisorId: sup.Id);
+		CreateUser(users, out var jack, "Jack", "jack", "jack@uni.local", UserRole.Staff, "jack123");
+		CreateUser(users, out var kim, "Kim", "kim", "kim@uni.local", UserRole.Student, "kim123", supervisorId: sup.Id);
+		CreateUser(users, out var leo, "Leo", "leo", "leo@uni.local", UserRole.Researcher, "leo123", supervisorId: sup.Id);
+		CreateUser(users, out var maya, "Maya", "maya", "maya@uni.local", UserRole.Student, "maya123", supervisorId: sup.Id);
+		CreateUser(users, out var nora, "Nora", "nora", "nora@uni.local", UserRole.Researcher, "nora123", supervisorId: sup.Id);
+		CreateUser(users, out var owen, "Owen", "owen", "owen@uni.local", UserRole.Staff, "owen123");
+		CreateUser(users, out var pia, "Pia", "pia", "pia@uni.local", UserRole.Student, "pia123", supervisorId: sup.Id);
+		CreateUser(users, out var quinn, "Quinn", "quinn", "quinn@uni.local", UserRole.Researcher, "quinn123", supervisorId: sup.Id);
+		CreateUser(users, out var ryan, "Ryan", "ryan", "ryan@uni.local", UserRole.Student, "ryan123", supervisorId: sup.Id);
+		CreateUser(users, out var sara, "Sara", "sara", "sara@uni.local", UserRole.Researcher, "sara123", supervisorId: sup.Id);
+		CreateUser(users, out var tom, "Tom", "tom", "tom@uni.local", UserRole.Staff, "tom123");
+		CreateUser(users, out var uma, "Uma", "uma", "uma@uni.local", UserRole.Student, "uma123", supervisorId: sup.Id);
+		CreateUser(users, out var victor, "Victor", "victor", "victor@uni.local", UserRole.Researcher, "victor123", supervisorId: sup.Id);
+		CreateUser(users, out var wendy, "Wendy", "wendy", "wendy@uni.local", UserRole.Student, "wendy123", supervisorId: sup.Id);
+		CreateUser(users, out var xavier, "Xavier", "xavier", "xavier@uni.local", UserRole.Researcher, "xavier123", supervisorId: sup.Id);
+		CreateUser(users, out var yuki, "Yuki", "yuki", "yuki@uni.local", UserRole.Student, "yuki123", supervisorId: sup.Id);
+		CreateUser(users, out var zane, "Zane", "zane", "zane@uni.local", UserRole.Staff, "zane123");
+
 		// Teams
 		var teamA = teams.Add(new Team { Name = "Team A", ProjectName = "Project A", MemberIds = new() { alice.Id, bob.Id } });
 		var teamB = teams.Add(new Team { Name = "Team B", ProjectName = "Project B", MemberIds = new() { alice.Id } });
+		var teamC = teams.Add(new Team { Name = "Team C", ProjectName = "Autonomous Drones", MemberIds = new() { charlie.Id, diana.Id } });
+		var teamD = teams.Add(new Team { Name = "Team D", ProjectName = "Cleanroom Microfabrication", MemberIds = new() { fiona.Id, henry.Id } });
+		var teamE = teams.Add(new Team { Name = "Team E", ProjectName = "VR Rehab Study", MemberIds = new() { iris.Id, bob.Id } });
+		var teamOps = teams.Add(new Team { Name = "Ops Team", ProjectName = "Facility Maintenance", MemberIds = new() { eric.Id, jack.Id } });
+		var teamF = teams.Add(new Team { Name = "Team F", ProjectName = "EdgeAI Vision", MemberIds = new() { charlie.Id, grace.Id, leo.Id } });
+		var teamG = teams.Add(new Team { Name = "Team G", ProjectName = "Soil Sensors", MemberIds = new() { henry.Id, sara.Id, zane.Id } });
+		var teamH = teams.Add(new Team { Name = "Team H", ProjectName = "VR Rehab Cohort B", MemberIds = new() { iris.Id, yuki.Id } });
+		var teamI = teams.Add(new Team { Name = "Team I", ProjectName = "Acoustic Beamforming", MemberIds = new() { diana.Id, wendy.Id } });
+		var teamJ = teams.Add(new Team { Name = "Team J", ProjectName = "Robotics Safety", MemberIds = new() { fiona.Id, ryan.Id, quinn.Id } });
 
 		// Labs
 		var electrical = labs.Add(new ElectricalLab
@@ -284,6 +319,135 @@ public static class SampleDataSeeder
 				Purpose = "Acoustic chamber measurements",
 				Status = BookingStatus.Pending
 			});
+
+			// Extra bookings for analytics
+			bookings.Add(new Booking
+			{
+				UserId = charlie.Id,
+				LabId = robotics.Id,
+				Start = today.AddDays(4).AddHours(9),
+				End = today.AddDays(4).AddHours(11),
+				Purpose = "SLAM dataset collection",
+				Status = BookingStatus.Confirmed
+			});
+			bookings.Add(new Booking
+			{
+				UserId = diana.Id,
+				EquipmentId = threeDPrinter.Id,
+				Start = today.AddDays(1).AddHours(13),
+				End = today.AddDays(1).AddHours(15),
+				Purpose = "3D print casing prototype",
+				Status = BookingStatus.Pending
+			});
+			bookings.Add(new Booking
+			{
+				UserId = eric.Id,
+				EquipmentId = osc.Id,
+				Start = today.AddHours(16),
+				End = today.AddHours(17),
+				Purpose = "Oscilloscope calibration",
+				Status = BookingStatus.Confirmed
+			});
+			bookings.Add(new Booking
+			{
+				UserId = fiona.Id,
+				EquipmentId = micromanip.Id,
+				Start = today.AddDays(2).AddHours(9),
+				End = today.AddDays(2).AddHours(12),
+				Purpose = "Cell positioning trials",
+				Status = BookingStatus.Confirmed
+			});
+			bookings.Add(new Booking
+			{
+				UserId = grace.Id,
+				LabId = dataLab.Id,
+				Start = today.AddDays(5).AddHours(10),
+				End = today.AddDays(5).AddHours(13),
+				Purpose = "Dataset labeling sprint",
+				Status = BookingStatus.Confirmed
+			});
+			bookings.Add(new Booking
+			{
+				UserId = henry.Id,
+				EquipmentId = robotArm.Id,
+				Start = today.AddDays(6).AddHours(14),
+				End = today.AddDays(6).AddHours(16),
+				Purpose = "Manipulator repeatability test",
+				Status = BookingStatus.Pending
+			});
+			bookings.Add(new Booking
+			{
+				UserId = iris.Id,
+				LabId = mr.Id,
+				Start = today.AddDays(7).AddHours(9),
+				End = today.AddDays(7).AddHours(10),
+				Purpose = "VR rehab pilot session",
+				Status = BookingStatus.Confirmed
+			});
+			bookings.Add(new Booking
+			{
+				UserId = jack.Id,
+				EquipmentId = shearBox.Id,
+				Start = today.AddDays(1).AddHours(8),
+				End = today.AddDays(1).AddHours(10),
+				Purpose = "Soil shear maintenance check",
+				Status = BookingStatus.Rejected
+			});
+
+			// Role-based booking frequency over a wider time window
+			var rng = new Random(4242);
+			var allLabs = labs.GetAll().ToList();
+			var allEq = equipment.GetAll().ToList();
+			var allTeams = teams.GetAll().ToList();
+			foreach (var u in users.GetAll())
+			{
+				int target = u.Role switch
+				{
+					UserRole.Student => 10,
+					UserRole.Researcher => 12,
+					UserRole.Staff => 6,
+					UserRole.Supervisor => 4,
+					UserRole.TechnicalLabManager => 3,
+					UserRole.AcademicLabManager => 2,
+					UserRole.Professor => 3,
+					UserRole.Admin => 1,
+					_ => 2
+				};
+				for (int i = 0; i < target; i++)
+				{
+					bool useEq = allEq.Count > 0 && rng.NextDouble() < 0.5;
+					int dayOffset = rng.Next(-30, 31);
+					int startHour = rng.Next(8, 18);
+					int durationHours = rng.Next(1, 4);
+					var startT = DateTime.Today.AddDays(dayOffset).AddHours(startHour);
+					var endT = startT.AddHours(durationHours);
+					var status = rng.NextDouble() < 0.7 ? BookingStatus.Confirmed : (rng.NextDouble() < 0.75 ? BookingStatus.Pending : BookingStatus.Rejected);
+					var b = new Booking
+					{
+						UserId = u.Id,
+						Start = startT,
+						End = endT,
+						Purpose = $"{u.Role} session #{i + 1}",
+						Status = status
+					};
+					if (useEq)
+					{
+						var eq = allEq[rng.Next(allEq.Count)];
+						b.EquipmentId = eq.Id;
+					}
+					else
+					{
+						var lb = allLabs[rng.Next(allLabs.Count)];
+						b.LabId = lb.Id;
+					}
+					var myTeams = allTeams.Where(t => t.MemberIds.Contains(u.Id)).ToList();
+					if (myTeams.Count > 0 && rng.NextDouble() < 0.7)
+					{
+						b.TeamId = myTeams[rng.Next(myTeams.Count)].Id;
+					}
+					bookings.Add(b);
+				}
+			}
 		}
 
 		// Sample access requests
@@ -335,6 +499,82 @@ public static class SampleDataSeeder
 				Status = AccessRequestStatus.Rejected,
 				Score = 50
 			});
+
+			// Additional access requests for analytics
+			accessRequests.Add(new AccessRequest
+			{
+				UserId = charlie.Id,
+				LabId = microNano.Id,
+				TeamId = teamD.Id,
+				Reason = "Access to microfabrication lab for sensor arrays.",
+				SubmittedAt = DateTime.UtcNow.AddDays(-3),
+				Status = AccessRequestStatus.Pending,
+				Score = 85
+			});
+			accessRequests.Add(new AccessRequest
+			{
+				UserId = diana.Id,
+				LabId = mr.Id,
+				TeamId = teamE.Id,
+				Reason = "VR study pilot access.",
+				SubmittedAt = DateTime.UtcNow.AddDays(-1),
+				Status = AccessRequestStatus.Approved,
+				Score = 95
+			});
+			accessRequests.Add(new AccessRequest
+			{
+				UserId = eric.Id,
+				LabId = dataLab.Id,
+				TeamId = teamOps.Id,
+				Reason = "Data lab access for maintenance analytics dashboard.",
+				SubmittedAt = DateTime.UtcNow.AddDays(-4),
+				Status = AccessRequestStatus.Approved,
+				Score = 100
+			});
+			accessRequests.Add(new AccessRequest
+			{
+				UserId = grace.Id,
+				LabId = robotics.Id,
+				TeamId = teamD.Id,
+				Reason = "Robotics lab access for perception benchmarking.",
+				SubmittedAt = DateTime.UtcNow.AddDays(-2),
+				Status = AccessRequestStatus.Rejected,
+				Score = 60
+			});
+
+			// Role-based bulk access requests
+			var rngAR = new Random(5252);
+			var labsList = labs.GetAll().ToList();
+			var teamsList = teams.GetAll().ToList();
+			foreach (var u in users.GetAll().Where(u => u.Role is UserRole.Student or UserRole.Researcher))
+			{
+				int count = rngAR.Next(1, 4);
+				for (int i = 0; i < count; i++)
+				{
+					var lb = labsList[rngAR.Next(labsList.Count)];
+					var myTeams = teamsList.Where(t => t.MemberIds.Contains(u.Id)).ToList();
+					Guid? teamId = null;
+					if (myTeams.Count > 0 && rngAR.NextDouble() < 0.6) teamId = myTeams[rngAR.Next(myTeams.Count)].Id;
+					var r = rngAR.NextDouble();
+					var status = r < 0.5 ? AccessRequestStatus.Pending : (r < 0.8 ? AccessRequestStatus.Approved : AccessRequestStatus.Rejected);
+					int score = status switch
+					{
+						AccessRequestStatus.Approved => rngAR.Next(90, 101),
+						AccessRequestStatus.Pending => rngAR.Next(80, 96),
+						_ => rngAR.Next(50, 76)
+					};
+					accessRequests.Add(new AccessRequest
+					{
+						UserId = u.Id,
+						LabId = lb.Id,
+						TeamId = teamId,
+						Reason = $"Request {i + 1} for {lb.Name}",
+						SubmittedAt = DateTime.UtcNow.AddDays(-rngAR.Next(1, 30)),
+						Status = status,
+						Score = score
+					});
+				}
+			}
 		}
 	}
 

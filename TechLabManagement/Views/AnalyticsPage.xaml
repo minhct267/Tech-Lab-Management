@@ -1,0 +1,104 @@
+<Page x:Class="TechLabManagement.Views.AnalyticsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:oxy="http://oxyplot.org/wpf"
+    mc:Ignorable="d"
+    Title="Analytics">
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+            <TextBlock Text="From:" VerticalAlignment="Center" Margin="0,0,8,0" />
+            <DatePicker SelectedDate="{Binding FromDate}" Width="150" Margin="0,0,12,0" />
+            <TextBlock Text="To:" VerticalAlignment="Center" Margin="0,0,8,0" />
+            <DatePicker SelectedDate="{Binding ToDate}" Width="150" Margin="0,0,12,0" />
+            <Button Content="Refresh" Command="{Binding RefreshCommand}" Padding="12,6" />
+            <Button Content="Export CSV" Command="{Binding ExportCommand}" Padding="12,6"
+                Margin="8,0,0,0" />
+        </StackPanel>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <GroupBox Header="Booking Volume by Role x Hour" Margin="0,0,12,12">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="2*" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <oxy:PlotView Grid.Row="0" Model="{Binding BookingByRoleHourPlot}" />
+                    <DataGrid Grid.Row="1" ItemsSource="{Binding BookingByRoleHour}"
+                        AutoGenerateColumns="False" IsReadOnly="True">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Role" Binding="{Binding Role}" Width="*" />
+                            <DataGridTextColumn Header="Hour" Binding="{Binding Hour}" Width="80" />
+                            <DataGridTextColumn Header="Count" Binding="{Binding Count}" Width="80" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </GroupBox>
+
+            <GroupBox Grid.Column="1" Header="Access Approval Rate by Role" Margin="0,0,0,12">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="2*" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <oxy:PlotView Grid.Row="0" Model="{Binding ApprovalRatePlot}" />
+                    <DataGrid Grid.Row="1" ItemsSource="{Binding ApprovalRateByRole}"
+                        AutoGenerateColumns="False" IsReadOnly="True">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Role" Binding="{Binding Role}" Width="*" />
+                            <DataGridTextColumn Header="Approved" Binding="{Binding Approved}"
+                                Width="100" />
+                            <DataGridTextColumn Header="Total" Binding="{Binding Total}" Width="80" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </GroupBox>
+
+            <GroupBox Grid.Row="1" Header="Average Induction Score by Lab" Margin="0,0,12,0">
+                <DataGrid ItemsSource="{Binding AvgInductionByLab}"
+                    AutoGenerateColumns="False" IsReadOnly="True">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Lab" Binding="{Binding LabName}" Width="*" />
+                        <DataGridTextColumn Header="Avg Score" Binding="{Binding AverageScore}"
+                            Width="100" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </GroupBox>
+
+            <GroupBox Grid.Row="1" Grid.Column="1" Header="Equipment Booked Hours by ISO Week">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="2*" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <oxy:PlotView Grid.Row="0" Model="{Binding EquipmentHoursPlot}" />
+                    <DataGrid Grid.Row="1" ItemsSource="{Binding EquipmentHoursByWeek}"
+                        AutoGenerateColumns="False" IsReadOnly="True">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Equipment" Binding="{Binding EquipmentName}"
+                                Width="*" />
+                            <DataGridTextColumn Header="ISO Week" Binding="{Binding IsoWeek}"
+                                Width="100" />
+                            <DataGridTextColumn Header="Hours" Binding="{Binding Hours}" Width="100" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </GroupBox>
+        </Grid>
+    </Grid>
+</Page>

@@ -70,6 +70,11 @@ namespace TechLabManagement
             MainFrame.Navigate(new Views.BookingPage());
         }
 
+        private void AnalyticsMenu_Click(object sender, RoutedEventArgs e)
+        {
+            MainFrame.Navigate(new Views.AnalyticsPage());
+        }
+
         private void ApprovalsMenu_Click(object sender, RoutedEventArgs e)
         {
             MainFrame.Navigate(new Views.ApprovalsPage());

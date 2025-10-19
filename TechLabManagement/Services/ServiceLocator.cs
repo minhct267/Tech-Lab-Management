@@ -7,6 +7,7 @@ using TechLabManagement.Services.Repositories;
 using TechLabManagement.Services.Scheduling;
 using TechLabManagement.Services.Seed;
 using TechLabManagement.Services.Auth;
+using TechLabManagement.Services.Analytics;
 
 namespace TechLabManagement.Services;
 
@@ -30,6 +31,7 @@ public sealed class ServiceLocator
 	public IAccessService AccessService { get; }
 	public IAuthService Auth { get; }
 	public IAuthorizationService Authorization { get; }
+	public IAnalyticsService Analytics { get; }
 
 	/// <summary>
 	/// Current logged-in user (null until login) - provided by Auth service
@@ -55,6 +57,7 @@ public sealed class ServiceLocator
 		AccessService = new AccessService(AccessRequests, AccessGrants, InductionTests, InductionEvaluator, Notifier);
 		Auth = new AuthService(Users);
 		Authorization = new AuthorizationService(Auth, AccessGrants, Labs, Equipment);
+		Analytics = new AnalyticsService(Users, Labs, Equipment, Bookings, AccessRequests, InductionTests);
 
 		// No default user; require login via Auth
 	}

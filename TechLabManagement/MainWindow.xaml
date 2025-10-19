@@ -18,6 +18,8 @@
                     Foreground="White" Padding="12,8" />
                 <MenuItem Header="📅 _Booking" Click="BookingMenu_Click" Foreground="White"
                     Padding="12,8" />
+                <MenuItem Header="📈 _Analytics" Click="AnalyticsMenu_Click" Foreground="White"
+                    Padding="12,8" />
                 <MenuItem x:Name="ApprovalsMenuItem" Header="✅ _Approvals"
                     Click="ApprovalsMenu_Click" Foreground="White"
                     Padding="12,8" />
