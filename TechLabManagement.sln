@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TechLabManagement.Core", "T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TechLabManagement.Services", "TechLabManagement.Services\TechLabManagement.Services.csproj", "{9B8A719C-B8CA-41EA-8DB3-895B96C5C714}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TechLabManagement.Tests", "TechLabManagement.Tests\TechLabManagement.Tests.csproj", "{2E9451AF-60F4-45D7-9539-368BA0A29B28}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,18 @@ Global
 		{9B8A719C-B8CA-41EA-8DB3-895B96C5C714}.Release|x64.Build.0 = Release|Any CPU
 		{9B8A719C-B8CA-41EA-8DB3-895B96C5C714}.Release|x86.ActiveCfg = Release|Any CPU
 		{9B8A719C-B8CA-41EA-8DB3-895B96C5C714}.Release|x86.Build.0 = Release|Any CPU
+		{2E9451AF-60F4-45D7-9539-368BA0A29B28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E9451AF-60F4-45D7-9539-368BA0A29B28}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E9451AF-60F4-45D7-9539-368BA0A29B28}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{2E9451AF-60F4-45D7-9539-368BA0A29B28}.Debug|x64.Build.0 = Debug|Any CPU
+		{2E9451AF-60F4-45D7-9539-368BA0A29B28}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2E9451AF-60F4-45D7-9539-368BA0A29B28}.Debug|x86.Build.0 = Debug|Any CPU
+		{2E9451AF-60F4-45D7-9539-368BA0A29B28}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E9451AF-60F4-45D7-9539-368BA0A29B28}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E9451AF-60F4-45D7-9539-368BA0A29B28}.Release|x64.ActiveCfg = Release|Any CPU
+		{2E9451AF-60F4-45D7-9539-368BA0A29B28}.Release|x64.Build.0 = Release|Any CPU
+		{2E9451AF-60F4-45D7-9539-368BA0A29B28}.Release|x86.ActiveCfg = Release|Any CPU
+		{2E9451AF-60F4-45D7-9539-368BA0A29B28}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

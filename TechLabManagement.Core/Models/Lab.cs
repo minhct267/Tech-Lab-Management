@@ -7,6 +7,7 @@ public abstract class Lab : IEntity
 	public Guid Id { get; set; } = Guid.NewGuid();
 	public string Name { get; set; } = string.Empty;
 	public string Location { get; set; } = string.Empty;
+	public Guid? ParentLabId { get; set; }
 	public Guid OwnerId { get; set; }
 	public Guid TechnicalManagerId { get; set; }
 	public Guid AcademicManagerId { get; set; }
@@ -28,6 +29,26 @@ public sealed class RoboticsLab : Lab
 public sealed class MixedRealityLab : Lab
 {
 	public override IReadOnlyCollection<string> GetRequiredSafetyTags() => new[] { "MR", "Motion" };
+}
+
+public sealed class AcousticLab : Lab
+{
+	public override IReadOnlyCollection<string> GetRequiredSafetyTags() => new[] { "HearingProtection", "Calibration" };
+}
+
+public sealed class DataAnalyticsLab : Lab
+{
+	public override IReadOnlyCollection<string> GetRequiredSafetyTags() => new[] { "Ergonomics", "DataSecurity" };
+}
+
+public sealed class MicroNanoLab : Lab
+{
+	public override IReadOnlyCollection<string> GetRequiredSafetyTags() => new[] { "Cleanroom", "PPE" };
+}
+
+public sealed class GeotechnologyLab : Lab
+{
+	public override IReadOnlyCollection<string> GetRequiredSafetyTags() => new[] { "HeavyMachinery", "PPE" };
 }
 
 internal sealed class DefaultAccessPolicy : IAccessPolicy
