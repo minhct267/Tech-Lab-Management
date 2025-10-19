@@ -30,8 +30,8 @@ public sealed class ApprovalsViewModel : BaseViewModel
 		}
 	}
 
-	private AccessRequestStatus _filterStatus = AccessRequestStatus.Pending;
-	public AccessRequestStatus FilterStatus
+    private AccessRequestStatus? _filterStatus = AccessRequestStatus.Pending;
+    public AccessRequestStatus? FilterStatus
 	{
 		get => _filterStatus;
 		set
@@ -72,10 +72,10 @@ public sealed class ApprovalsViewModel : BaseViewModel
 		ApproveCommand = new RelayCommand(_ => ApproveRequest(), _ => CanApprove());
 		RejectCommand = new RelayCommand(_ => RejectRequest(), _ => CanReject());
 		RefreshCommand = new RelayCommand(_ => LoadAccessRequests());
-		ShowAllCommand = new RelayCommand(_ => { FilterStatus = AccessRequestStatus.Draft; LoadAccessRequests(); });
-		ShowPendingCommand = new RelayCommand(_ => { FilterStatus = AccessRequestStatus.Pending; LoadAccessRequests(); });
-		ShowApprovedCommand = new RelayCommand(_ => { FilterStatus = AccessRequestStatus.Approved; LoadAccessRequests(); });
-		ShowRejectedCommand = new RelayCommand(_ => { FilterStatus = AccessRequestStatus.Rejected; LoadAccessRequests(); });
+        ShowAllCommand = new RelayCommand(_ => { FilterStatus = null; LoadAccessRequests(); });
+        ShowPendingCommand = new RelayCommand(_ => { FilterStatus = AccessRequestStatus.Pending; LoadAccessRequests(); });
+        ShowApprovedCommand = new RelayCommand(_ => { FilterStatus = AccessRequestStatus.Approved; LoadAccessRequests(); });
+        ShowRejectedCommand = new RelayCommand(_ => { FilterStatus = AccessRequestStatus.Rejected; LoadAccessRequests(); });
 
 		LoadAccessRequests();
 	}
@@ -88,17 +88,8 @@ public sealed class ApprovalsViewModel : BaseViewModel
 		AccessRequests.Clear();
 
 		var labId = FilterLab?.Id; // Will be null if "All Labs" is selected
-		
-		// Get all requests if Draft is selected (we use Draft as "All" since we don't show actual drafts)
-		IEnumerable<AccessRequest> requests;
-		if (FilterStatus == AccessRequestStatus.Draft)
-		{
-			requests = _svc.AccessService.GetAccessRequests(null, labId);
-		}
-		else
-		{
-			requests = _svc.AccessService.GetAccessRequests(FilterStatus, labId);
-		}
+
+        IEnumerable<AccessRequest> requests = _svc.AccessService.GetAccessRequests(FilterStatus, labId);
 
 		foreach (var request in requests)
 		{
@@ -123,7 +114,9 @@ public sealed class ApprovalsViewModel : BaseViewModel
 	/// </summary>
 	private bool CanApprove()
 	{
-		return SelectedRequest != null && SelectedRequest.Request.Status == AccessRequestStatus.Pending;
+		if (SelectedRequest == null) return false;
+		if (SelectedRequest.Request.Status != AccessRequestStatus.Pending) return false;
+		return ServiceLocator.Current.Authorization.HasPermission(Core.Models.Permission.ApproveAccessRequest);
 	}
 
 	/// <summary>
@@ -131,7 +124,9 @@ public sealed class ApprovalsViewModel : BaseViewModel
 	/// </summary>
 	private bool CanReject()
 	{
-		return SelectedRequest != null && SelectedRequest.Request.Status == AccessRequestStatus.Pending;
+		if (SelectedRequest == null) return false;
+		if (SelectedRequest.Request.Status != AccessRequestStatus.Pending) return false;
+		return ServiceLocator.Current.Authorization.HasPermission(Core.Models.Permission.RejectAccessRequest);
 	}
 
 	/// <summary>
@@ -152,7 +147,7 @@ public sealed class ApprovalsViewModel : BaseViewModel
 		try
 		{
 			_svc.AccessService.ApproveAccessRequest(SelectedRequest.Request.Id, _svc.CurrentUser.Id);
-			
+
 			MessageBox.Show(
 				"Access request approved successfully!",
 				"Success",
@@ -185,7 +180,7 @@ public sealed class ApprovalsViewModel : BaseViewModel
 		try
 		{
 			_svc.AccessService.RejectAccessRequest(SelectedRequest.Request.Id, _svc.CurrentUser.Id);
-			
+
 			MessageBox.Show(
 				"Access request rejected.",
 				"Request Rejected",

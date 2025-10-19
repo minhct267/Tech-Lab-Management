@@ -47,28 +47,44 @@ public sealed class BookingViewModel : BaseViewModel
 	public int StartHour
 	{
 		get => _startHour;
-		set => SetProperty(ref _startHour, value);
+		set
+		{
+			if (value < 0 || value > 23) return;
+			SetProperty(ref _startHour, value);
+		}
 	}
 
 	private int _startMinute;
 	public int StartMinute
 	{
 		get => _startMinute;
-		set => SetProperty(ref _startMinute, value);
+		set
+		{
+			if (value < 0 || value > 59) return;
+			SetProperty(ref _startMinute, value);
+		}
 	}
 
 	private int _endHour = 10;
 	public int EndHour
 	{
 		get => _endHour;
-		set => SetProperty(ref _endHour, value);
+		set
+		{
+			if (value < 0 || value > 23) return;
+			SetProperty(ref _endHour, value);
+		}
 	}
 
 	private int _endMinute;
 	public int EndMinute
 	{
 		get => _endMinute;
-		set => SetProperty(ref _endMinute, value);
+		set
+		{
+			if (value < 0 || value > 59) return;
+			SetProperty(ref _endMinute, value);
+		}
 	}
 
 	private string _purpose = string.Empty;
@@ -206,6 +222,16 @@ public sealed class BookingViewModel : BaseViewModel
 			return;
 		}
 
+		// Authorization check
+		var canCreate = _svc.Authorization.CanCreateBooking(
+			SelectedResource.Type == ResourceType.Lab ? SelectedResource.Id : null,
+			SelectedResource.Type == ResourceType.Equipment ? SelectedResource.Id : null);
+		if (!canCreate)
+		{
+			MessageBox.Show("You don't have permission to book this resource. Please request access first.", "Not Authorized", MessageBoxButton.OK, MessageBoxImage.Warning);
+			return;
+		}
+
 		if (string.IsNullOrWhiteSpace(Purpose))
 		{
 			MessageBox.Show("Please provide a purpose for the booking.", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -237,7 +263,7 @@ public sealed class BookingViewModel : BaseViewModel
 		if (conflicts.Any())
 		{
 			var result = MessageBox.Show(
-				$"There are {conflicts.Count()} existing booking(s) that conflict with this time slot.\n\nDo you want to proceed anyway? (Status will be Pending)",
+				$"There are {conflicts.Count()} existing booking(s) that conflict with this time slot.\n\nDo you want to proceed anyway?",
 				"Booking Conflict",
 				MessageBoxButton.YesNo,
 				MessageBoxImage.Warning);
@@ -250,19 +276,24 @@ public sealed class BookingViewModel : BaseViewModel
 
 		try
 		{
-			// Create the booking
 			var booking = new Booking
 			{
-				UserId = _svc.CurrentUser.Id,
+				UserId = _svc.Auth.CurrentUser!.Id,
 				LabId = SelectedResource.Type == ResourceType.Lab ? SelectedResource.Id : null,
 				EquipmentId = SelectedResource.Type == ResourceType.Equipment ? SelectedResource.Id : null,
 				Start = startTime,
 				End = endTime,
 				Purpose = Purpose,
-				Status = conflicts.Any() ? BookingStatus.Pending : BookingStatus.Confirmed
+				Status = BookingStatus.Confirmed
 			};
 
-			_svc.Bookings.Add(booking);
+			// Finalize via SchedulingService to enforce invariants
+			var (ok, error) = _svc.SchedulingService.TryCreateBooking(booking);
+			if (!ok)
+			{
+				MessageBox.Show(error ?? "Unable to create booking.", "Booking Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+				return;
+			}
 
 			MessageBox.Show(
 				$"Booking created successfully!\n\nResource: {SelectedResource.Name}\nTime: {startTime:g} - {endTime:t}\nStatus: {booking.Status}",

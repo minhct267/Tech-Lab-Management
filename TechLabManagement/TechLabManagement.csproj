@@ -13,9 +13,6 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\TechLabManagement.Core\TechLabManagement.Core.csproj" />
-    <ProjectReference Include="..\TechLabManagement.Services\TechLabManagement.Services.csproj" />
-  </ItemGroup>
+  <!-- Removed duplicate ProjectReference block -->
 
 </Project>

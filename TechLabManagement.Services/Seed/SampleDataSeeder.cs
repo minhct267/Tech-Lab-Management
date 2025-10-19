@@ -15,13 +15,15 @@ public static class SampleDataSeeder
 		IRepository<Booking>? bookings = null,
 		IRepository<AccessRequest>? accessRequests = null)
 	{
-		// Users
-		var admin = users.Add(new User { Name = "Admin", Email = "admin@uni.local", Role = UserRole.Admin });
-		var prof = users.Add(new User { Name = "Prof. Smith", Email = "smith@uni.local", Role = UserRole.Professor });
-		var techMgr = users.Add(new User { Name = "Alex TechMgr", Email = "alex@uni.local", Role = UserRole.TechnicalLabManager });
-		var sup = users.Add(new User { Name = "Dr. Lee", Email = "lee@uni.local", Role = UserRole.Supervisor });
-		var alice = users.Add(new User { Name = "Alice", Email = "alice@uni.local", Role = UserRole.Researcher, SupervisorId = sup.Id });
-		var bob = users.Add(new User { Name = "Bob", Email = "bob@uni.local", Role = UserRole.Student, SupervisorId = sup.Id });
+		// Users with credentials
+		CreateUser(users, out var admin, "Admin", "admin", "admin@uni.local", UserRole.Admin, "!Haidrone123");
+		CreateUser(users, out var prof, "Prof. Smith", "professor", "smith@uni.local", UserRole.Professor, "prof123");
+		CreateUser(users, out var techMgr, "Alex TechMgr", "techmgr", "alex@uni.local", UserRole.TechnicalLabManager, "tech123");
+		CreateUser(users, out var sup, "Dr. Lee", "supervisor", "lee@uni.local", UserRole.Supervisor, "sup123");
+		CreateUser(users, out var alice, "Alice", "alice", "alice@uni.local", UserRole.Researcher, "alice123", supervisorId: null);
+		alice.SupervisorId = sup.Id;
+		users.Update(alice);
+		CreateUser(users, out var bob, "Bob", "bob", "bob@uni.local", UserRole.Student, "bob123", supervisorId: sup.Id);
 
 		// Teams
 		var teamA = teams.Add(new Team { Name = "Team A", ProjectName = "Project A", MemberIds = new() { alice.Id, bob.Id } });
@@ -334,6 +336,21 @@ public static class SampleDataSeeder
 				Score = 50
 			});
 		}
+	}
+
+	private static void CreateUser(IRepository<User> users, out User user, string name, string username, string email, UserRole role, string password, Guid? supervisorId = null)
+	{
+		TechLabManagement.Services.Security.PasswordHasher.CreateHash(password, out var salt, out var hash);
+		user = users.Add(new User
+		{
+			Name = name,
+			Username = username,
+			Email = email,
+			PasswordHash = hash,
+			PasswordSalt = salt,
+			Role = role,
+			SupervisorId = supervisorId
+		});
 	}
 }
 

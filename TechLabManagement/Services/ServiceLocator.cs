@@ -6,6 +6,7 @@ using TechLabManagement.Services.Notifications;
 using TechLabManagement.Services.Repositories;
 using TechLabManagement.Services.Scheduling;
 using TechLabManagement.Services.Seed;
+using TechLabManagement.Services.Auth;
 
 namespace TechLabManagement.Services;
 
@@ -27,11 +28,13 @@ public sealed class ServiceLocator
 	public ISchedulingService SchedulingService { get; }
 	public INotifier Notifier { get; }
 	public IAccessService AccessService { get; }
+	public IAuthService Auth { get; }
+	public IAuthorizationService Authorization { get; }
 
 	/// <summary>
-	/// Current logged-in user (for demo purposes, set to Alice)
+	/// Current logged-in user (null until login) - provided by Auth service
 	/// </summary>
-	public User CurrentUser { get; set; } = null!;
+	public User CurrentUser => Auth.CurrentUser!;
 
 	private ServiceLocator()
 	{
@@ -50,9 +53,10 @@ public sealed class ServiceLocator
 		SchedulingService = new SchedulingService(Bookings);
 		Notifier = new ConsoleNotifier();
 		AccessService = new AccessService(AccessRequests, AccessGrants, InductionTests, InductionEvaluator, Notifier);
+		Auth = new AuthService(Users);
+		Authorization = new AuthorizationService(Auth, AccessGrants, Labs, Equipment);
 
-		// Set current user to Alice for demo purposes
-		CurrentUser = Users.Query(u => u.Name == "Alice").FirstOrDefault() ?? Users.GetAll().First();
+		// No default user; require login via Auth
 	}
 }
 

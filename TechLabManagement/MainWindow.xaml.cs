@@ -8,6 +8,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using TechLabManagement.Services;
 
 namespace TechLabManagement
 {
@@ -19,7 +20,29 @@ namespace TechLabManagement
         public MainWindow()
         {
             InitializeComponent();
-            Loaded += (_, __) => NavigateToDashboard();
+            Loaded += OnLoaded;
+            ServiceLocator.Current.Auth.CurrentUserChanged += OnCurrentUserChanged;
+        }
+
+        private void OnLoaded(object? sender, RoutedEventArgs e)
+        {
+            EnsureLoggedIn();
+            NavigateToDashboard();
+        }
+
+        private void EnsureLoggedIn()
+        {
+            var svc = ServiceLocator.Current;
+            if (svc.Auth.CurrentUser == null)
+            {
+                var login = new Views.LoginWindow();
+                var result = login.ShowDialog();
+                if (result != true)
+                {
+                    Close();
+                }
+            }
+            UpdateAccountUi();
         }
 
         private void NavigateToDashboard()
@@ -86,6 +109,35 @@ namespace TechLabManagement
                 "User Guide",
                 MessageBoxButton.OK,
                 MessageBoxImage.Information);
+        }
+
+        private void LoginMenu_Click(object sender, RoutedEventArgs e)
+        {
+            var login = new Views.LoginWindow();
+            login.ShowDialog();
+        }
+
+        private void LogoutMenu_Click(object sender, RoutedEventArgs e)
+        {
+            var svc = ServiceLocator.Current;
+            svc.Auth.Logout();
+            EnsureLoggedIn();
+            NavigateToDashboard();
+        }
+
+        private void OnCurrentUserChanged(object? sender, TechLabManagement.Core.Models.User? e)
+        {
+            Dispatcher.Invoke(UpdateAccountUi);
+        }
+
+        private void UpdateAccountUi()
+        {
+            var svc = ServiceLocator.Current;
+            var user = svc.Auth.CurrentUser;
+            if (user == null) return;
+            AccountMenuItem.Header = $"👤 {user.Name} ({user.Role})";
+            var canApprove = svc.Authorization.HasPermission(TechLabManagement.Core.Models.Permission.ApproveAccessRequest);
+            ApprovalsMenuItem.Visibility = canApprove ? Visibility.Visible : Visibility.Collapsed;
         }
     }
 }
