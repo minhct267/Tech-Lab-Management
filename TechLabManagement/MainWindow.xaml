@@ -9,9 +9,42 @@
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_Navigate">
-                <MenuItem Header="Dashboard" Click="DashboardMenu_Click" />
-                <MenuItem Header="Labs" Click="LabsMenu_Click" />
-                <MenuItem Header="Access Request" Click="AccessRequestMenu_Click" />
+                <MenuItem Click="DashboardMenu_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE80F;" Margin="0,0,6,0" />
+                        <TextBlock Text="Dashboard" />
+                    </StackPanel>
+                </MenuItem>
+                <MenuItem Click="LabsMenu_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE7BE;" Margin="0,0,6,0" />
+                        <TextBlock Text="Labs" />
+                    </StackPanel>
+                </MenuItem>
+                <MenuItem Click="AccessRequestMenu_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8B8;" Margin="0,0,6,0" />
+                        <TextBlock Text="Access Request" />
+                    </StackPanel>
+                </MenuItem>
+                <MenuItem Click="BookingMenu_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE787;" Margin="0,0,6,0" />
+                        <TextBlock Text="Booking Scheduler" />
+                    </StackPanel>
+                </MenuItem>
+                <MenuItem Click="ApprovalsMenu_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE73E;" Margin="0,0,6,0" />
+                        <TextBlock Text="Access Approvals" />
+                    </StackPanel>
+                </MenuItem>
+                <MenuItem Click="MaintenanceMenu_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE90A;" Margin="0,0,6,0" />
+                        <TextBlock Text="Maintenance &amp; Safety" />
+                    </StackPanel>
+                </MenuItem>
             </MenuItem>
         </Menu>
         <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden" />

@@ -3,6 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:validations="clr-namespace:TechLabManagement.Validations"
     mc:Ignorable="d"
     Title="Access Request">
     <Grid Margin="16">
@@ -20,8 +21,16 @@
                     <ComboBox ItemsSource="{Binding Labs}" SelectedItem="{Binding SelectedLab}"
                         DisplayMemberPath="Name" />
                     <TextBlock Text="Reason" Margin="0,12,0,0" />
-                    <TextBox Text="{Binding Reason}" Height="80" TextWrapping="Wrap"
-                        AcceptsReturn="True" />
+                    <TextBox Height="80" TextWrapping="Wrap" AcceptsReturn="True">
+                        <TextBox.Text>
+                            <Binding Path="Reason" UpdateSourceTrigger="PropertyChanged"
+                                ValidatesOnDataErrors="True">
+                                <Binding.ValidationRules>
+                                    <validations:MinLengthValidationRule MinLength="10" />
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
                 </StackPanel>
             </TabItem>
             <TabItem Header="2. Induction">
@@ -31,13 +40,7 @@
                             <DataTemplate>
                                 <StackPanel Margin="0,8,0,8">
                                     <TextBlock Text="{Binding Text}" FontWeight="Bold" />
-                                    <ItemsControl ItemsSource="{Binding Options}">
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <RadioButton Content="{Binding}" />
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
+                                    <ListBox ItemsSource="{Binding Options}" SelectedIndex="0" />
                                 </StackPanel>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>

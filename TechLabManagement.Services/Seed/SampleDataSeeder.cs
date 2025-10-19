@@ -6,13 +6,14 @@ namespace TechLabManagement.Services.Seed;
 
 public static class SampleDataSeeder
 {
-	public static void Seed(
-		IRepository<User> users,
-		IRepository<Team> teams,
-		IRepository<Lab> labs,
-		IRepository<Equipment> equipment,
-		IRepository<InductionTest> tests)
-	{
+    public static void Seed(
+        IRepository<User> users,
+        IRepository<Team> teams,
+        IRepository<Lab> labs,
+        IRepository<Equipment> equipment,
+        IRepository<InductionTest> tests,
+        IRepository<MaintenanceTask> maintenance)
+    {
 		// Users
 		var admin = users.Add(new User { Name = "Admin", Email = "admin@uni.local", Role = UserRole.Admin });
 		var prof = users.Add(new User { Name = "Prof. Smith", Email = "smith@uni.local", Role = UserRole.Professor });
@@ -57,16 +58,16 @@ public static class SampleDataSeeder
 		// Equipment
 		var solder = equipment.Add(new SolderingStation { Name = "Soldering Station", LabId = electrical.Id, SafetyTags = new() { "Electrical", "PPE" } });
 		var robotArm = equipment.Add(new RobotArm { Name = "UR10 Robot Arm", LabId = robotics.Id, SafetyTags = new() { "EmergencyStop" } });
-		var motion = equipment.Add(new MotionPlatform { Name = "Motion Platform", LabId = mr.Id, SafetyTags = new() { "Motion" } });
+        var motion = equipment.Add(new MotionPlatform { Name = "Motion Platform", LabId = mr.Id, SafetyTags = new() { "Motion" } });
 
-		// Wire LabRef
+        // Wire LabRef
 		foreach (var eq in equipment.GetAll())
 		{
 			eq.LabRef = labs.GetById(eq.LabId)!;
 		}
 
-		// Induction tests
-		tests.Add(new InductionTest
+        // Induction tests
+        tests.Add(new InductionTest
 		{
 			LabId = electrical.Id,
 			Questions = new()
@@ -76,7 +77,7 @@ public static class SampleDataSeeder
 			}
 		});
 
-		tests.Add(new InductionTest
+        tests.Add(new InductionTest
 		{
 			LabId = robotics.Id,
 			Questions = new()
@@ -84,6 +85,11 @@ public static class SampleDataSeeder
 				new Question { Text = "Know emergency stop location?", Options = new() { "Yes", "No" }, CorrectOptionIndex = 0 }
 			}
 		});
+
+        // Maintenance tasks
+        maintenance.Add(new MaintenanceTask { EquipmentId = solder.Id, DueDate = DateTime.Today.AddDays(3), Type = "Calibration", Notes = "Check tip temperature" });
+        maintenance.Add(new MaintenanceTask { EquipmentId = robotArm.Id, DueDate = DateTime.Today.AddDays(14), Type = "Inspection", Notes = "Grease joints" });
+        maintenance.Add(new MaintenanceTask { EquipmentId = motion.Id, DueDate = DateTime.Today.AddDays(5), Type = "Safety Check", Notes = "Emergency stop test" });
 	}
 }
 

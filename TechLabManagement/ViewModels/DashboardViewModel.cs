@@ -8,9 +8,9 @@ public sealed class DashboardViewModel : BaseViewModel
 {
 	private readonly ServiceLocator _svc = ServiceLocator.Current;
 
-	public int PendingAccessCount { get; }
+    public int PendingAccessCount { get; }
 	public int BookingsTodayCount { get; }
-	public int DueMaintenanceCount { get; }
+    public int DueMaintenanceCount { get; }
 
 	public ObservableCollection<LabStat> TopLabStats { get; } = new();
 	public ObservableCollection<TodayBookingItem> TodayBookings { get; } = new();
@@ -19,8 +19,10 @@ public sealed class DashboardViewModel : BaseViewModel
 	{
 		// Demo data from services
 		var today = DateTime.Today;
-		BookingsTodayCount = _svc.Bookings.GetAll().Count(b => b.Start.Date == today);
-		PendingAccessCount = 0; // Will be wired when AccessRequests repo added
+        BookingsTodayCount = _svc.Bookings.GetAll().Count(b => b.Start.Date == today);
+        PendingAccessCount = _svc.AccessService.GetRequestsByStatus(Core.Models.AccessRequestStatus.Pending).Count();
+        var dueTo = today.AddDays(7);
+        DueMaintenanceCount = _svc.MaintenanceTasks.GetAll().Count(t => t.Status == Core.Models.MaintenanceStatus.Open && t.DueDate <= dueTo);
 		DueMaintenanceCount = 0; // Placeholder for future
 
 		// Build simple stats using LINQ

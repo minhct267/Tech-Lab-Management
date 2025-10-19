@@ -12,7 +12,8 @@ public sealed class AccessRequestWizardViewModel : BaseViewModel
 	private readonly ServiceLocator _svc = ServiceLocator.Current;
 
 	public ObservableCollection<Lab> Labs { get; } = new();
-	public ObservableCollection<Question> CurrentQuestions { get; } = new();
+    public ObservableCollection<Question> CurrentQuestions { get; } = new();
+    public ObservableCollection<int> SelectedAnswers { get; } = new();
 
 	private Lab? _selectedLab;
 	public Lab? SelectedLab { get => _selectedLab; set { if (SetProperty(ref _selectedLab, value)) LoadTest(); } }
@@ -33,19 +34,20 @@ public sealed class AccessRequestWizardViewModel : BaseViewModel
 	{
 		foreach (var lab in _svc.Labs.GetAll()) Labs.Add(lab);
 		SelectedLab = Labs.FirstOrDefault();
-		NextCommand = new RelayCommand(_ => Step = Math.Min(2, Step + 1));
+        NextCommand = new RelayCommand(_ => Step = Math.Min(2, Step + 1));
 		BackCommand = new RelayCommand(_ => Step = Math.Max(0, Step - 1));
-		SubmitCommand = new RelayCommand(_ => Submit());
+        SubmitCommand = new RelayCommand(_ => Submit());
 	}
 
 	private void LoadTest()
 	{
 		CurrentQuestions.Clear();
+        SelectedAnswers.Clear();
 		if (SelectedLab == null) return;
-		var test = _svc.InductionTests.Query(t => t.LabId == SelectedLab.Id).FirstOrDefault();
+        var test = _svc.InductionTests.Query(t => t.LabId == SelectedLab.Id).FirstOrDefault();
 		if (test != null)
 		{
-			foreach (var q in test.Questions) CurrentQuestions.Add(q);
+            foreach (var q in test.Questions) { CurrentQuestions.Add(q); SelectedAnswers.Add(0); }
 		}
 	}
 
@@ -56,7 +58,9 @@ public sealed class AccessRequestWizardViewModel : BaseViewModel
 			MessageBox.Show("Please select lab and provide a reason.");
 			return;
 		}
-		MessageBox.Show("Submitted! (mock)");
+        var user = _svc.Users.GetAll().First();
+        var req = _svc.AccessService.SubmitAccessRequest(user.Id, SelectedLab.Id, null, Reason, SelectedAnswers.ToList());
+        MessageBox.Show($"Submitted with status: {req.Status} (score {req.Score})");
 	}
 }
 

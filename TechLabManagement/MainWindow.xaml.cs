@@ -41,5 +41,20 @@ namespace TechLabManagement
         {
             MainFrame.Navigate(new Views.AccessRequestWizardPage());
         }
+
+        private void BookingMenu_Click(object sender, RoutedEventArgs e)
+        {
+            MainFrame.Navigate(new Views.BookingSchedulerPage());
+        }
+
+        private void ApprovalsMenu_Click(object sender, RoutedEventArgs e)
+        {
+            MainFrame.Navigate(new Views.AccessApprovalsPage());
+        }
+
+        private void MaintenanceMenu_Click(object sender, RoutedEventArgs e)
+        {
+            MainFrame.Navigate(new Views.MaintenanceSafetyPage());
+        }
     }
 }
