@@ -46,7 +46,7 @@ public sealed class AuthorizationService : IAuthorizationService
 		if (user == null) return false;
         if (user.Role is UserRole.TechnicalLabManager or UserRole.AcademicLabManager or UserRole.Professor or UserRole.Admin) return true;
         var hasGrant = _grants.Query(g => g.UserId == user.Id && g.LabId == lab.Id).Any();
-        // Grant is the authoritative permission for non-privileged users; policy can add extra checks if desired.
+        // Grant is the main permission check for entering lab
         return hasGrant;
 	}
 
@@ -56,7 +56,7 @@ public sealed class AuthorizationService : IAuthorizationService
 		if (user == null) return false;
         if (user.Role is UserRole.TechnicalLabManager or UserRole.Professor or UserRole.Admin) return true;
         var hasGrant = _grants.Query(g => g.UserId == user.Id && g.LabId == equipment.LabId).Any();
-        // For simplicity, grant on the lab allows equipment use unless equipment.RequiresSupervisor is true and user is not supervisor/manager
+        // Granting lab access allows equipment use unless it requires a supervisor
         if (!hasGrant) return false;
         if (equipment.RequiresSupervisor())
         {

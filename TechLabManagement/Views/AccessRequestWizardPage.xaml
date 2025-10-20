@@ -17,29 +17,39 @@
             <TabItem Header="1. Request">
                 <StackPanel Margin="12">
                     <TextBlock Text="Select Lab" />
-                    <ComboBox ItemsSource="{Binding Labs}" SelectedItem="{Binding SelectedLab}"
-                        DisplayMemberPath="Name" />
+                    <ComboBox ItemsSource="{Binding LabChoices}"
+                        SelectedValuePath="Lab"
+                        SelectedValue="{Binding SelectedLab}"
+                        DisplayMemberPath="Name">
+                        <ComboBox.ItemContainerStyle>
+                            <Style TargetType="ComboBoxItem">
+                                <Setter Property="IsEnabled" Value="{Binding IsEnabled}" />
+                            </Style>
+                        </ComboBox.ItemContainerStyle>
+                    </ComboBox>
                     <TextBlock Text="Reason" Margin="0,12,0,0" />
                     <TextBox Text="{Binding Reason}" Height="80" TextWrapping="Wrap"
                         AcceptsReturn="True" />
                 </StackPanel>
             </TabItem>
-            <TabItem Header="2. Induction">
+            <TabItem Header="2. Induction" IsEnabled="{Binding CanNavigateToInduction}">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <StackPanel Margin="12">
-                        <TextBlock Text="Answer all questions correctly to pass the induction test:" Margin="0,0,0,12" />
+                        <TextBlock Text="Answer all questions correctly to pass the induction test:"
+                            Margin="0,0,0,12" />
                         <ItemsControl ItemsSource="{Binding CurrentQuestions}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Margin="0,8,0,16">
-                                        <TextBlock Text="{Binding Question.Text}" FontWeight="Bold" Margin="0,0,0,8" />
+                                        <TextBlock Text="{Binding Question.Text}" FontWeight="Bold"
+                                            Margin="0,0,0,8" />
                                         <ItemsControl ItemsSource="{Binding Options}">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
-                                                    <RadioButton Content="{Binding Text}" 
-                                                               IsChecked="{Binding IsSelected, Mode=TwoWay}"
-                                                               Command="{Binding SelectCommand}"
-                                                               Margin="0,2,0,2" />
+                                                    <RadioButton Content="{Binding Text}"
+                                                        IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                                        Command="{Binding SelectCommand}"
+                                                        Margin="0,2,0,2" />
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
                                         </ItemsControl>
@@ -50,7 +60,7 @@
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
-            <TabItem Header="3. Review">
+            <TabItem Header="3. Review" IsEnabled="{Binding CanNavigateToReview}">
                 <StackPanel Margin="12">
                     <TextBlock Text="Review your request before submit" />
                     <TextBlock Text="{Binding Summary}" />

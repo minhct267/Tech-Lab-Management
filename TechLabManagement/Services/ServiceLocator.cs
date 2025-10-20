@@ -50,7 +50,7 @@ public sealed class ServiceLocator
 		AccessRequests = new InMemoryRepository<AccessRequest>();
 		AccessGrants = new InMemoryRepository<AccessGrant>();
 
-        // Create sample data
+        // Creates sample data
         SampleDataSeeder.Seed(Users, Teams, Labs, Equipment, InductionTests, Bookings, AccessRequests);
 
 		InductionEvaluator = new InductionEvaluator();

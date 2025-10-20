@@ -12,8 +12,6 @@ public abstract class Equipment : IEntity
 	public bool IsBookable { get; set; } = true;
 	public string MaintenanceInfo { get; set; } = string.Empty;
 	public List<string> SafetyTags { get; set; } = new();
-
-	// Must be wired by services after hydrate
 	public Lab LabRef { get; set; } = null!;
 
 	public virtual bool RequiresSupervisor() => false;
@@ -21,7 +19,7 @@ public abstract class Equipment : IEntity
 
 public sealed class SolderingStation : Equipment
 {
-	public override bool RequiresSupervisor() => true; // electrical work requires supervision in this lab
+	public override bool RequiresSupervisor() => true; // Electrical work requires supervision in this lab
 }
 
 public sealed class MotionPlatform : Equipment

@@ -17,12 +17,12 @@ public sealed class LabsViewModel : BaseViewModel
 	public Lab? SelectedLab
 	{
 		get => _selectedLab;
-		set { if (SetProperty(ref _selectedLab, value)) LoadEquipment(); } // update equipment list when lab changes
+		set { if (SetProperty(ref _selectedLab, value)) LoadEquipment(); } // Update equipment list when lab changes
 	}
 
 	public ICommand RequestAccessCommand { get; }
 
-	/* Initializes labs list and default selection; wires the request access command. */
+	/* Initializes labs list and default selection; wires the request access command */
 	public LabsViewModel()
 	{
 		foreach (var lab in _svc.Labs.GetAll().OrderBy(l => l.Name)) Labs.Add(lab);
@@ -30,7 +30,7 @@ public sealed class LabsViewModel : BaseViewModel
 		RequestAccessCommand = new RelayCommand(_ => System.Windows.MessageBox.Show("Access request flow will open."));
 	}
 
-	/* Loads equipment for the selected lab into the right-hand list. */
+	/* Loads equipment for the selected lab */
 	private void LoadEquipment()
 	{
 		Equipment.Clear();

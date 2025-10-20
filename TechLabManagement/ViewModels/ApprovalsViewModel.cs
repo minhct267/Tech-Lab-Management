@@ -7,9 +7,6 @@ using TechLabManagement.Services;
 
 namespace TechLabManagement.ViewModels;
 
-/// <summary>
-/// ViewModel for approving or rejecting access requests
-/// </summary>
 public sealed class ApprovalsViewModel : BaseViewModel
 {
 	private readonly ServiceLocator _svc = ServiceLocator.Current;
@@ -25,7 +22,7 @@ public sealed class ApprovalsViewModel : BaseViewModel
 		{
 			if (SetProperty(ref _filterLab, value))
 			{
-				LoadAccessRequests(); // refresh list on lab filter change
+				LoadAccessRequests(); // Refresh list on lab filter change
 			}
 		}
 	}
@@ -38,7 +35,7 @@ public sealed class ApprovalsViewModel : BaseViewModel
 		{
 			if (SetProperty(ref _filterStatus, value))
 			{
-				LoadAccessRequests(); // refresh list on status filter change
+				LoadAccessRequests(); // Refresh list on status filter change
 			}
 		}
 	}
@@ -58,7 +55,7 @@ public sealed class ApprovalsViewModel : BaseViewModel
 	public ICommand ShowApprovedCommand { get; }
 	public ICommand ShowRejectedCommand { get; }
 
-	/* Initializes filters, commands, and loads the initial request list. */
+	/* Initializes filters, commands, and loads the initial request list */
 	public ApprovalsViewModel()
 	{
 		// Load labs for filtering
@@ -80,16 +77,13 @@ public sealed class ApprovalsViewModel : BaseViewModel
 
 		LoadAccessRequests();
 	}
-
-	/// <summary>
-	/// Load access requests based on current filters
-	/// </summary>
-	/* Loads access requests from service based on current filters. */
+	
+	/* Loads access requests from service based on current filters */
 	private void LoadAccessRequests()
 	{
 		AccessRequests.Clear();
 
-		var labId = FilterLab?.Id; // Will be null if "All Labs" is selected
+		var labId = FilterLab?.Id; // Null if "All Labs" is selected
 
         IEnumerable<AccessRequest> requests = _svc.AccessService.GetAccessRequests(FilterStatus, labId);
 
@@ -110,33 +104,24 @@ public sealed class ApprovalsViewModel : BaseViewModel
 			});
 		}
 	}
-
-	/// <summary>
-	/// Determine if the selected request can be approved
-	/// </summary>
-	/* Returns whether the selected request can be approved by the current user. */
+	
+	/* Returns whether the selected request can be approved by the current user */
 	private bool CanApprove()
 	{
 		if (SelectedRequest == null) return false;
 		if (SelectedRequest.Request.Status != AccessRequestStatus.Pending) return false;
 		return ServiceLocator.Current.Authorization.HasPermission(Core.Models.Permission.ApproveAccessRequest);
 	}
-
-	/// <summary>
-	/// Determine if the selected request can be rejected
-	/// </summary>
-	/* Returns whether the selected request can be rejected by the current user. */
+	
+	/* Returns whether the selected request can be rejected by the current user */
 	private bool CanReject()
 	{
 		if (SelectedRequest == null) return false;
 		if (SelectedRequest.Request.Status != AccessRequestStatus.Pending) return false;
 		return ServiceLocator.Current.Authorization.HasPermission(Core.Models.Permission.RejectAccessRequest);
 	}
-
-	/// <summary>
-	/// Approve the selected access request
-	/// </summary>
-	/* Approves the selected request and refreshes the list. */
+	
+	/* Approves the selected request and refreshes the list */
 	private void ApproveRequest()
 	{
 		if (SelectedRequest == null) return;
@@ -166,11 +151,8 @@ public sealed class ApprovalsViewModel : BaseViewModel
 			MessageBox.Show($"Error approving request: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 		}
 	}
-
-	/// <summary>
-	/// Reject the selected access request
-	/// </summary>
-	/* Rejects the selected request and refreshes the list. */
+	
+	/* Rejects the selected request and refreshes the list */
 	private void RejectRequest()
 	{
 		if (SelectedRequest == null) return;
@@ -200,10 +182,7 @@ public sealed class ApprovalsViewModel : BaseViewModel
 			MessageBox.Show($"Error rejecting request: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 		}
 	}
-
-	/// <summary>
-	/// Get color based on request status
-	/// </summary>
+	
 	private static string GetStatusColor(AccessRequestStatus status)
 	{
 		return status switch
@@ -216,9 +195,6 @@ public sealed class ApprovalsViewModel : BaseViewModel
 	}
 }
 
-/// <summary>
-/// View model for a single access request in the list
-/// </summary>
 public sealed class AccessRequestViewModel
 {
 	public AccessRequest Request { get; set; } = null!;
@@ -229,12 +205,8 @@ public sealed class AccessRequestViewModel
 	public string StatusColor { get; set; } = string.Empty;
 }
 
-/// <summary>
-/// Helper class for lab filtering in the approvals view
-/// </summary>
 public sealed class LabFilterItem
 {
 	public Guid? Id { get; set; }
 	public string Name { get; set; } = string.Empty;
 }
-

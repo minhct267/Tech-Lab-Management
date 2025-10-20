@@ -7,9 +7,6 @@ using TechLabManagement.Services;
 
 namespace TechLabManagement.ViewModels;
 
-/// <summary>
-/// ViewModel for booking lab resources and equipment
-/// </summary>
 public sealed class BookingViewModel : BaseViewModel
 {
 	private readonly ServiceLocator _svc = ServiceLocator.Current;
@@ -25,7 +22,7 @@ public sealed class BookingViewModel : BaseViewModel
 		{
 			if (SetProperty(ref _selectedResource, value))
 			{
-				LoadExistingBookings(); // refresh list when resource changes
+				LoadExistingBookings(); // Refresh list when resource changes
 			}
 		}
 	}
@@ -38,7 +35,7 @@ public sealed class BookingViewModel : BaseViewModel
 		{
 			if (SetProperty(ref _selectedDate, value))
 			{
-				LoadExistingBookings(); // refresh list when date changes
+				LoadExistingBookings(); // Refresh list when date changes
 			}
 		}
 	}
@@ -49,7 +46,7 @@ public sealed class BookingViewModel : BaseViewModel
 		get => _startHour;
 		set
 		{
-			if (value < 0 || value > 23) return; // guard hour range
+			if (value < 0 || value > 23) return; // Guard hour range
 			SetProperty(ref _startHour, value);
 		}
 	}
@@ -60,7 +57,7 @@ public sealed class BookingViewModel : BaseViewModel
 		get => _startMinute;
 		set
 		{
-			if (value < 0 || value > 59) return; // guard minute range
+			if (value < 0 || value > 59) return; // Guard minute range
 			SetProperty(ref _startMinute, value);
 		}
 	}
@@ -71,7 +68,7 @@ public sealed class BookingViewModel : BaseViewModel
 		get => _endHour;
 		set
 		{
-			if (value < 0 || value > 23) return; // guard hour range
+			if (value < 0 || value > 23) return; // Guard hour range
 			SetProperty(ref _endHour, value);
 		}
 	}
@@ -82,7 +79,7 @@ public sealed class BookingViewModel : BaseViewModel
 		get => _endMinute;
 		set
 		{
-			if (value < 0 || value > 59) return; // guard minute range
+			if (value < 0 || value > 59) return; // Guard minute range
 			SetProperty(ref _endMinute, value);
 		}
 	}
@@ -104,7 +101,7 @@ public sealed class BookingViewModel : BaseViewModel
 	public ICommand CreateBookingCommand { get; }
 	public ICommand CheckConflictsCommand { get; }
 
-	/* Initializes resource list, selects a default, and wires commands. */
+	/* Initializes resource list, selects a default, and wires commands */
 	public BookingViewModel()
 	{
 		LoadResources();
@@ -113,11 +110,8 @@ public sealed class BookingViewModel : BaseViewModel
 		CreateBookingCommand = new RelayCommand(_ => CreateBooking());
 		CheckConflictsCommand = new RelayCommand(_ => CheckForConflicts());
 	}
-
-	/// <summary>
-	/// Load all available resources (labs and equipment)
-	/// </summary>
-	/* Loads all labs and equipment as bookable resources. */
+	
+	/* Loads all labs and equipment as bookable resources */
 	private void LoadResources()
 	{
 		Resources.Clear();
@@ -146,11 +140,8 @@ public sealed class BookingViewModel : BaseViewModel
 			});
 		}
 	}
-
-	/// <summary>
-	/// Load existing bookings for the selected resource and date
-	/// </summary>
-	/* Populates the right-hand list with existing bookings for the selection/date. */
+	
+	/* Load the existing bookings for the selection/date */
 	private void LoadExistingBookings()
 	{
 		ExistingBookings.Clear();
@@ -176,11 +167,8 @@ public sealed class BookingViewModel : BaseViewModel
 			});
 		}
 	}
-
-	/// <summary>
-	/// Check for scheduling conflicts
-	/// </summary>
-	/* Checks whether the selected time slot overlaps existing bookings. */
+	
+	/* Checks whether the selected time slot overlaps existing bookings */
 	private void CheckForConflicts()
 	{
 		if (SelectedResource == null)
@@ -214,10 +202,8 @@ public sealed class BookingViewModel : BaseViewModel
 		}
 	}
 
-	/// <summary>
-	/// Create a new booking
-	/// </summary>
-	/* Creates a booking after validation and server-side checks via SchedulingService. */
+	
+	/* Creates a booking after validation */
 	private void CreateBooking()
 	{
 		// Validation
@@ -318,9 +304,6 @@ public sealed class BookingViewModel : BaseViewModel
 	}
 }
 
-/// <summary>
-/// Represents a resource that can be booked
-/// </summary>
 public sealed class ResourceItem
 {
 	public Guid Id { get; set; }
@@ -330,18 +313,12 @@ public sealed class ResourceItem
 	public string DisplayName => $"{Name} ({Type})";
 }
 
-/// <summary>
-/// Type of resource
-/// </summary>
 public enum ResourceType
 {
 	Lab,
 	Equipment
 }
 
-/// <summary>
-/// Represents a booking in the list
-/// </summary>
 public sealed class BookingItem
 {
 	public string Start { get; set; } = string.Empty;

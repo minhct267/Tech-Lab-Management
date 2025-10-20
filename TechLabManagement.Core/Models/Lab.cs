@@ -55,7 +55,7 @@ internal sealed class DefaultAccessPolicy : IAccessPolicy
 {
 	public bool CanEnter(User user, Lab lab, DateTime at)
 	{
-		// By default allow Managers/Owner/Admin; others require approval via AccessGrant (handled in services)
+		// By default allow Managers/Owner/Admin; others require approval via AccessGrant
 		return user.Role is UserRole.TechnicalLabManager or UserRole.AcademicLabManager or UserRole.Professor or UserRole.Admin;
 	}
 

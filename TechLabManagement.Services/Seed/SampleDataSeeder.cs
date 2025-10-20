@@ -25,7 +25,7 @@ public static class SampleDataSeeder
 		users.Update(alice);
 		CreateUser(users, out var bob, "Bob", "bob", "bob@uni.local", UserRole.Student, "bob123", supervisorId: sup.Id);
 
-		// Additional users for analytics richness
+		// Additional users for analytics
 		CreateUser(users, out var charlie, "Charlie", "charlie", "charlie@uni.local", UserRole.Researcher, "charlie123", supervisorId: sup.Id);
 		CreateUser(users, out var diana, "Diana", "diana", "diana@uni.local", UserRole.Student, "diana123", supervisorId: sup.Id);
 		CreateUser(users, out var eric, "Eric", "eric", "eric@uni.local", UserRole.Staff, "eric123");

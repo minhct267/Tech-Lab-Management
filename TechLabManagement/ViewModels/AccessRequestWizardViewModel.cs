@@ -12,17 +12,58 @@ public sealed class AccessRequestWizardViewModel : BaseViewModel
 	private readonly ServiceLocator _svc = ServiceLocator.Current;
 	private readonly Dictionary<Guid, int> _userAnswers = new();
 
-	public ObservableCollection<Lab> Labs { get; } = new();
+    public ObservableCollection<Lab> Labs { get; } = new();
+    public ObservableCollection<LabChoice> LabChoices { get; } = new();
 	public ObservableCollection<QuestionViewModel> CurrentQuestions { get; } = new();
 
-	private Lab? _selectedLab;
-	public Lab? SelectedLab { get => _selectedLab; set { if (SetProperty(ref _selectedLab, value)) LoadTest(); } }
+    private Lab? _selectedLab;
+    public Lab? SelectedLab
+    {
+        get => _selectedLab;
+        set
+        {
+            if (SetProperty(ref _selectedLab, value))
+            {
+                LoadTest();
+                // Also notify Summary so the Review tab reflects latest selection
+                RaisePropertyChanged(nameof(Summary));
+            }
+        }
+    }
 
-	private string _reason = string.Empty;
-	public string Reason { get => _reason; set => SetProperty(ref _reason, value); }
+    private string _reason = string.Empty;
+    public string Reason
+    {
+        get => _reason;
+        set
+        {
+            if (SetProperty(ref _reason, value))
+            {
+                // Keep Summary in sync when the reason text changes
+                RaisePropertyChanged(nameof(Summary));
+            }
+        }
+    }
 
-	private int _step;
-	public int Step { get => _step; set => SetProperty(ref _step, value); }
+    private int _step;
+    public int Step
+    {
+        get => _step;
+        set
+        {
+            if (SetProperty(ref _step, value))
+            {
+                // Update navigation guards for TabItems
+                RaisePropertyChanged(nameof(CanNavigateToInduction));
+                RaisePropertyChanged(nameof(CanNavigateToReview));
+            }
+        }
+    }
+
+    // Only allow navigating to Induction tab after completing Step 0 via Next
+    public bool CanNavigateToInduction => Step >= 1;
+    // Only allow navigating to Review tab after completing Step 1 via Next
+    public bool CanNavigateToReview => Step >= 2;
 
 	public string Summary => SelectedLab == null ? "" : $"Lab: {SelectedLab.Name}\nReason: {Reason}";
 
@@ -33,8 +74,13 @@ public sealed class AccessRequestWizardViewModel : BaseViewModel
 	/* Initializes lab list and wizard commands */
 	public AccessRequestWizardViewModel()
 	{
-		foreach (var lab in _svc.Labs.GetAll()) Labs.Add(lab);
-		SelectedLab = Labs.FirstOrDefault();
+        foreach (var lab in _svc.Labs.GetAll())
+        {
+            Labs.Add(lab);
+            var hasTest = _svc.InductionTests.Query(t => t.LabId == lab.Id).Any();
+            LabChoices.Add(new LabChoice { Lab = lab, Name = lab.Name, IsEnabled = hasTest });
+        }
+        SelectedLab = LabChoices.FirstOrDefault(c => c.IsEnabled)?.Lab ?? Labs.FirstOrDefault();
 		NextCommand = new RelayCommand(_ => GoNext());
 		BackCommand = new RelayCommand(_ => Step = Math.Max(0, Step - 1));
 		SubmitCommand = new RelayCommand(_ => Submit());
@@ -60,8 +106,8 @@ public sealed class AccessRequestWizardViewModel : BaseViewModel
 	/* Advances to the next step after validating current step inputs */
 	private void GoNext()
 	{
-		// Request
-		if (Step == 0)
+        // Request
+        if (Step == 0)
 		{
 			if (SelectedLab == null)
 			{
@@ -73,6 +119,13 @@ public sealed class AccessRequestWizardViewModel : BaseViewModel
 				MessageBox.Show("Please provide a reason for access request.", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Warning);
 				return;
 			}
+            // Ensure the selected lab has an induction test configured
+            var hasTest = _svc.InductionTests.Query(t => t.LabId == SelectedLab.Id).Any();
+            if (!hasTest)
+            {
+                MessageBox.Show("Induction test is not available for the selected lab yet.", "Not Available", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
 		}
 
 		// Induction
@@ -150,9 +203,9 @@ public sealed class AccessRequestWizardViewModel : BaseViewModel
 	/* Resets the wizard back to the initial state */
 	private void ResetForm()
 	{
-		Step = 0;
-		Reason = string.Empty;
-		SelectedLab = Labs.FirstOrDefault();
+        Step = 0;
+        Reason = string.Empty;
+        SelectedLab = LabChoices.FirstOrDefault(c => c.IsEnabled)?.Lab ?? Labs.FirstOrDefault();
 	}
 }
 
@@ -163,7 +216,7 @@ public sealed class QuestionViewModel : BaseViewModel
 	public Question Question { get; }
 	public ObservableCollection<OptionViewModel> Options { get; } = new();
 
-	/* Wraps a Question and exposes selectable options with selection tracking. */
+	/* Wraps a question and shows selectable options with selection tracking */
 	public QuestionViewModel(Question question, Dictionary<Guid, int> userAnswers)
 	{
 		Question = question;
@@ -175,7 +228,7 @@ public sealed class QuestionViewModel : BaseViewModel
 		}
 	}
 
-	/* Records the selected option and updates option selection states. */
+	/* Records the selected option and updates option selection states */
 	public void SelectOption(int optionIndex)
 	{
 		_userAnswers[Question.Id] = optionIndex;
@@ -187,16 +240,13 @@ public sealed class QuestionViewModel : BaseViewModel
 		}
 	}
 
-	/* Returns whether the provided option index is currently selected. */
+	/* Returns whether the provided option index is currently selected */
 	public bool IsOptionSelected(int optionIndex)
 	{
 		return _userAnswers.TryGetValue(Question.Id, out var selectedIndex) && selectedIndex == optionIndex;
 	}
 }
 
-/// <summary>
-/// View model for a single option within a question
-/// </summary>
 public sealed class OptionViewModel : BaseViewModel
 {
 	private readonly QuestionViewModel _parent;
@@ -212,7 +262,7 @@ public sealed class OptionViewModel : BaseViewModel
 		set => SetProperty(ref _isSelected, value);
 	}
 
-	/* Binds a single answer choice and exposes a command to select it. */
+	/* Binds a single answer choice and exposes a command to select it */
 	public OptionViewModel(string text, int index, QuestionViewModel parent)
 	{
 		Text = text;
@@ -221,11 +271,16 @@ public sealed class OptionViewModel : BaseViewModel
 		SelectCommand = new RelayCommand(_ => _parent.SelectOption(Index));
 	}
 
-	/* Syncs IsSelected with the parent's current selection. */
+	/* Syncs IsSelected with the parent's current selection */
 	public void UpdateSelection()
 	{
 		IsSelected = _parent.IsOptionSelected(Index);
 	}
 }
 
-
+public sealed class LabChoice
+{
+    public Lab Lab { get; set; } = null!;
+    public string Name { get; set; } = string.Empty;
+    public bool IsEnabled { get; set; }
+}
