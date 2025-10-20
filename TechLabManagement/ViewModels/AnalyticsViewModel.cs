@@ -49,6 +49,7 @@ public sealed class AnalyticsViewModel : BaseViewModel
 		private set => SetProperty(ref _equipmentHoursPlot, value);
 	}
 
+	/* Initializes commands and builds initial charts/tables. */
 	public AnalyticsViewModel()
 	{
 		RefreshCommand = new RelayCommand(_ => Refresh());
@@ -56,6 +57,7 @@ public sealed class AnalyticsViewModel : BaseViewModel
 		Refresh();
 	}
 
+	/* Reloads data from Analytics service and rebuilds plots. */
 	private void Refresh()
 	{
 		BookingByRoleHour.Clear();
@@ -75,6 +77,7 @@ public sealed class AnalyticsViewModel : BaseViewModel
 		BuildCharts();
 	}
 
+	/* Exports current analytics tables to CSV files on Desktop. */
 	private void ExportCsv()
 	{
 		var dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "TechLabAnalytics");
@@ -90,6 +93,7 @@ public sealed class AnalyticsViewModel : BaseViewModel
 			EquipmentHoursByWeek.Select(r => $"{r.EquipmentName},{r.IsoWeek},{Math.Round(r.Hours,2)}"));
 	}
 
+	/* Writes a simple CSV file with UTF-8 encoding. */
 	private static void WriteCsv(string path, IEnumerable<string> header, IEnumerable<string> lines)
 	{
 		using var sw = new StreamWriter(path, false, Encoding.UTF8);
@@ -97,6 +101,7 @@ public sealed class AnalyticsViewModel : BaseViewModel
 		foreach (var l in lines) sw.WriteLine(l);
 	}
 
+	/* Builds OxyPlot models for each analytics visualization. */
 	private void BuildCharts()
 	{
 		// BookingByRoleHour -> LineSeries per role across hour 0..23

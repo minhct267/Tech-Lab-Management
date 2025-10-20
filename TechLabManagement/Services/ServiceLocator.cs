@@ -13,10 +13,11 @@ namespace TechLabManagement.Services;
 
 public sealed class ServiceLocator
 {
-	private static ServiceLocator? _current;
+    private static ServiceLocator? _current;
 	public static ServiceLocator Current => _current ??= new ServiceLocator();
 
-	public IRepository<User> Users { get; }
+    // Repositories
+    public IRepository<User> Users { get; }
 	public IRepository<Team> Teams { get; }
 	public IRepository<Lab> Labs { get; }
 	public IRepository<Equipment> Equipment { get; }
@@ -25,7 +26,8 @@ public sealed class ServiceLocator
 	public IRepository<AccessRequest> AccessRequests { get; }
 	public IRepository<AccessGrant> AccessGrants { get; }
 
-	public IInductionEvaluator InductionEvaluator { get; }
+    // Services
+    public IInductionEvaluator InductionEvaluator { get; }
 	public ISchedulingService SchedulingService { get; }
 	public INotifier Notifier { get; }
 	public IAccessService AccessService { get; }
@@ -33,12 +35,11 @@ public sealed class ServiceLocator
 	public IAuthorizationService Authorization { get; }
 	public IAnalyticsService Analytics { get; }
 
-	/// <summary>
-	/// Current logged-in user (null until login) - provided by Auth service
-	/// </summary>
-	public User CurrentUser => Auth.CurrentUser!;
+    // Current user
+    public User CurrentUser => Auth.CurrentUser!;
 
-	private ServiceLocator()
+    /* Initializes repositories, sample data, and wires all core services */
+    private ServiceLocator()
 	{
 		Users = new InMemoryRepository<User>();
 		Teams = new InMemoryRepository<Team>();
@@ -49,7 +50,8 @@ public sealed class ServiceLocator
 		AccessRequests = new InMemoryRepository<AccessRequest>();
 		AccessGrants = new InMemoryRepository<AccessGrant>();
 
-		SampleDataSeeder.Seed(Users, Teams, Labs, Equipment, InductionTests, Bookings, AccessRequests);
+        // Create sample data
+        SampleDataSeeder.Seed(Users, Teams, Labs, Equipment, InductionTests, Bookings, AccessRequests);
 
 		InductionEvaluator = new InductionEvaluator();
 		SchedulingService = new SchedulingService(Bookings);
@@ -58,9 +60,5 @@ public sealed class ServiceLocator
 		Auth = new AuthService(Users);
 		Authorization = new AuthorizationService(Auth, AccessGrants, Labs, Equipment);
 		Analytics = new AnalyticsService(Users, Labs, Equipment, Bookings, AccessRequests, InductionTests);
-
-		// No default user; require login via Auth
 	}
 }
-
-

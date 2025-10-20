@@ -30,6 +30,7 @@ public sealed class AccessRequestWizardViewModel : BaseViewModel
 	public ICommand BackCommand { get; }
 	public ICommand SubmitCommand { get; }
 
+	/* Initializes lab list and wizard commands */
 	public AccessRequestWizardViewModel()
 	{
 		foreach (var lab in _svc.Labs.GetAll()) Labs.Add(lab);
@@ -39,12 +40,13 @@ public sealed class AccessRequestWizardViewModel : BaseViewModel
 		SubmitCommand = new RelayCommand(_ => Submit());
 	}
 
+	/* Loads induction questions for the selected lab and resets user answers */
 	private void LoadTest()
 	{
 		CurrentQuestions.Clear();
 		_userAnswers.Clear();
 		if (SelectedLab == null) return;
-		
+
 		var test = _svc.InductionTests.Query(t => t.LabId == SelectedLab.Id).FirstOrDefault();
 		if (test != null)
 		{
@@ -55,9 +57,10 @@ public sealed class AccessRequestWizardViewModel : BaseViewModel
 		}
 	}
 
+	/* Advances to the next step after validating current step inputs */
 	private void GoNext()
 	{
-		// Validate step 0 (Request)
+		// Request
 		if (Step == 0)
 		{
 			if (SelectedLab == null)
@@ -71,8 +74,8 @@ public sealed class AccessRequestWizardViewModel : BaseViewModel
 				return;
 			}
 		}
-		
-		// Validate step 1 (Induction)
+
+		// Induction
 		if (Step == 1)
 		{
 			if (_userAnswers.Count != CurrentQuestions.Count)
@@ -85,6 +88,7 @@ public sealed class AccessRequestWizardViewModel : BaseViewModel
 		Step = Math.Min(2, Step + 1);
 	}
 
+	/* Submits the access request after validating inputs and computing the induction score */
 	private void Submit()
 	{
 		if (SelectedLab == null || string.IsNullOrWhiteSpace(Reason))
@@ -110,7 +114,7 @@ public sealed class AccessRequestWizardViewModel : BaseViewModel
 				Status = AccessRequestStatus.Draft
 			};
 
-			// Convert answers to list (in question order)
+			// Convert answers to list
 			var answersList = CurrentQuestions.Select(q => _userAnswers[q.Question.Id]).ToList();
 
 			// Submit through access service
@@ -143,6 +147,7 @@ public sealed class AccessRequestWizardViewModel : BaseViewModel
 		}
 	}
 
+	/* Resets the wizard back to the initial state */
 	private void ResetForm()
 	{
 		Step = 0;
@@ -151,9 +156,6 @@ public sealed class AccessRequestWizardViewModel : BaseViewModel
 	}
 }
 
-/// <summary>
-/// View model for a single induction question with answer tracking
-/// </summary>
 public sealed class QuestionViewModel : BaseViewModel
 {
 	private readonly Dictionary<Guid, int> _userAnswers;
@@ -161,6 +163,7 @@ public sealed class QuestionViewModel : BaseViewModel
 	public Question Question { get; }
 	public ObservableCollection<OptionViewModel> Options { get; } = new();
 
+	/* Wraps a Question and exposes selectable options with selection tracking. */
 	public QuestionViewModel(Question question, Dictionary<Guid, int> userAnswers)
 	{
 		Question = question;
@@ -172,10 +175,11 @@ public sealed class QuestionViewModel : BaseViewModel
 		}
 	}
 
+	/* Records the selected option and updates option selection states. */
 	public void SelectOption(int optionIndex)
 	{
 		_userAnswers[Question.Id] = optionIndex;
-		
+
 		// Update IsSelected for all options
 		foreach (var option in Options)
 		{
@@ -183,6 +187,7 @@ public sealed class QuestionViewModel : BaseViewModel
 		}
 	}
 
+	/* Returns whether the provided option index is currently selected. */
 	public bool IsOptionSelected(int optionIndex)
 	{
 		return _userAnswers.TryGetValue(Question.Id, out var selectedIndex) && selectedIndex == optionIndex;
@@ -207,6 +212,7 @@ public sealed class OptionViewModel : BaseViewModel
 		set => SetProperty(ref _isSelected, value);
 	}
 
+	/* Binds a single answer choice and exposes a command to select it. */
 	public OptionViewModel(string text, int index, QuestionViewModel parent)
 	{
 		Text = text;
@@ -215,6 +221,7 @@ public sealed class OptionViewModel : BaseViewModel
 		SelectCommand = new RelayCommand(_ => _parent.SelectOption(Index));
 	}
 
+	/* Syncs IsSelected with the parent's current selection. */
 	public void UpdateSelection()
 	{
 		IsSelected = _parent.IsOptionSelected(Index);

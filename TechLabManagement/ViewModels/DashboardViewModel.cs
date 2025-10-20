@@ -15,15 +15,16 @@ public sealed class DashboardViewModel : BaseViewModel
 	public ObservableCollection<LabStat> TopLabStats { get; } = new();
 	public ObservableCollection<TodayBookingItem> TodayBookings { get; } = new();
 
+	/* Builds dashboard KPIs and today's activity from in-memory repositories. */
 	public DashboardViewModel()
 	{
-		// Demo data from services
+		// Reference date for queries
 		var today = DateTime.Today;
 		BookingsTodayCount = _svc.Bookings.GetAll().Count(b => b.Start.Date == today);
 		PendingAccessCount = _svc.AccessRequests.Query(r => r.Status == AccessRequestStatus.Pending).Count();
 		DueMaintenanceCount = 0; // Placeholder for future
 
-		// Build simple stats using LINQ
+		// Build simple 7-day utilization stats per lab
 		var to = today.AddDays(7);
 		var byLab = _svc.Bookings.GetAll()
 			.Where(b => b.Start >= today && b.Start < to && b.LabId != null)
@@ -33,7 +34,7 @@ public sealed class DashboardViewModel : BaseViewModel
 			.Take(5)
 			.ToList();
 
-		var max = byLab.FirstOrDefault()?.Hours ?? 1;
+		var max = byLab.FirstOrDefault()?.Hours ?? 1; // scale bars relative to top lab
 		foreach (var item in byLab)
 		{
 			var lab = _svc.Labs.GetById(item.LabId)!;
@@ -45,6 +46,7 @@ public sealed class DashboardViewModel : BaseViewModel
 			});
 		}
 
+		// Today's bookings list
 		foreach (var b in _svc.Bookings.GetAll().Where(b => b.Start.Date == today).OrderBy(b => b.Start))
 		{
 			TodayBookings.Add(new TodayBookingItem

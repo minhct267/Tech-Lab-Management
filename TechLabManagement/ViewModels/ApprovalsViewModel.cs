@@ -25,20 +25,20 @@ public sealed class ApprovalsViewModel : BaseViewModel
 		{
 			if (SetProperty(ref _filterLab, value))
 			{
-				LoadAccessRequests();
+				LoadAccessRequests(); // refresh list on lab filter change
 			}
 		}
 	}
 
     private AccessRequestStatus? _filterStatus = AccessRequestStatus.Pending;
-    public AccessRequestStatus? FilterStatus
+	public AccessRequestStatus? FilterStatus
 	{
 		get => _filterStatus;
 		set
 		{
 			if (SetProperty(ref _filterStatus, value))
 			{
-				LoadAccessRequests();
+				LoadAccessRequests(); // refresh list on status filter change
 			}
 		}
 	}
@@ -58,6 +58,7 @@ public sealed class ApprovalsViewModel : BaseViewModel
 	public ICommand ShowApprovedCommand { get; }
 	public ICommand ShowRejectedCommand { get; }
 
+	/* Initializes filters, commands, and loads the initial request list. */
 	public ApprovalsViewModel()
 	{
 		// Load labs for filtering
@@ -83,6 +84,7 @@ public sealed class ApprovalsViewModel : BaseViewModel
 	/// <summary>
 	/// Load access requests based on current filters
 	/// </summary>
+	/* Loads access requests from service based on current filters. */
 	private void LoadAccessRequests()
 	{
 		AccessRequests.Clear();
@@ -112,6 +114,7 @@ public sealed class ApprovalsViewModel : BaseViewModel
 	/// <summary>
 	/// Determine if the selected request can be approved
 	/// </summary>
+	/* Returns whether the selected request can be approved by the current user. */
 	private bool CanApprove()
 	{
 		if (SelectedRequest == null) return false;
@@ -122,6 +125,7 @@ public sealed class ApprovalsViewModel : BaseViewModel
 	/// <summary>
 	/// Determine if the selected request can be rejected
 	/// </summary>
+	/* Returns whether the selected request can be rejected by the current user. */
 	private bool CanReject()
 	{
 		if (SelectedRequest == null) return false;
@@ -132,6 +136,7 @@ public sealed class ApprovalsViewModel : BaseViewModel
 	/// <summary>
 	/// Approve the selected access request
 	/// </summary>
+	/* Approves the selected request and refreshes the list. */
 	private void ApproveRequest()
 	{
 		if (SelectedRequest == null) return;
@@ -165,6 +170,7 @@ public sealed class ApprovalsViewModel : BaseViewModel
 	/// <summary>
 	/// Reject the selected access request
 	/// </summary>
+	/* Rejects the selected request and refreshes the list. */
 	private void RejectRequest()
 	{
 		if (SelectedRequest == null) return;
