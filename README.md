@@ -41,7 +41,7 @@ flowchart LR
         I3[IAccessService]
         I4[ISchedulingService]
         I5[IAnalyticsService]
-        I6[IRepository<T>]
+        I6[IRepository&lt;T&gt;]
         M1[(Models: User, Lab, Equipment, Booking, AccessRequest, AccessGrant, UserRole, Permission)]
     end
 
@@ -51,16 +51,16 @@ flowchart LR
         S3[AccessService]
         S4[SchedulingService]
         S5[AnalyticsService]
-        S6[Repositories: InMemoryRepository<T>]
+        S6[Repositories: InMemoryRepository&lt;T&gt;]
         S7[Security: PasswordHasher]
         S8[Policies: AccessPolicies]
         S9[Seed: SampleDataSeeder]
     end
 
-    subgraph App [TechLabManagement (WPF)]
+    subgraph App [TechLabManagement WPF]
         UI1[Views: Dashboard, Labs, Access Request Wizard, Booking, Approvals, Analytics, Login]
         UI2[ViewModels: DashboardVM, LabsVM, AccessRequestWizardVM, BookingVM, ApprovalsVM, AnalyticsVM]
-        UI3[ServiceLocator: wires repositories + services + sample data]
+        UI3[ServiceLocator: wiring + sample data]
     end
 
     subgraph Tests [TechLabManagement.Tests]
